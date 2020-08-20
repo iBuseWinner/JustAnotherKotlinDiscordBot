@@ -15,35 +15,20 @@ var con: Connection? = null
     private set
 
 fun setup() {
-    val parser = JSONParser()
     try {
-        val mysql = settings?.get("mysql") as JSONObject
-        debug("MySQL: $mysql")
-        val host = mysql["host"] as String
-        val port = mysql["port"] as Int
-        val database = mysql["database"] as String
-        val user = mysql["user"] as String
-        val password = mysql["user"] as String
-        val args = mysql["args"] as String
-        debug("Trying to create connection...")
-        con = DriverManager.getConnection("jdbc:mysql://$host:$port/$database?autoReconnect=true&$args", user, password)
-        info("Connection to MySQL created!")
-
-        /*FileReader("settings.json").use { reader ->
-            val `object` = parser.parse(reader)
-            val json = `object` as JSONObject
-            val mysql = json["mysql"] as JSONObject
+        if(con == null || con!!.isClosed) {
+            val mysql = settings?.get("mysql") as JSONObject
             debug("MySQL: $mysql")
             val host = mysql["host"] as String
-            val port = mysql["port"] as Int
+            val port = mysql["port"] as Long
             val database = mysql["database"] as String
             val user = mysql["user"] as String
-            val password = mysql["password"] as String
+            val password = mysql["user"] as String
             val args = mysql["args"] as String
             debug("Trying to create connection...")
             con = DriverManager.getConnection("jdbc:mysql://$host:$port/$database?autoReconnect=true&$args", user, password)
             info("Connection to MySQL created!")
-        }*/
+        }
     } catch (e: Exception) {
         error(e)
     }

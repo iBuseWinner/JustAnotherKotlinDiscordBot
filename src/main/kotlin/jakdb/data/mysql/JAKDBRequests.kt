@@ -64,7 +64,6 @@ fun usersCount(): Long {
 fun removeOneTime() {
     val timer = "UPDATE `jadb_timers` SET `timeLeft`=`timeLeft`-1 WHERE `timeLeft`>0;"
     val del = "DELETE FROM `jadb_timers` WHERE `timeLeft`=0;"
-    debug("Updating timers...")
     exec(del)
     exec(timer)
 }
