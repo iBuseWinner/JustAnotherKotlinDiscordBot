@@ -1,8 +1,9 @@
-package kotlin.jakdb.utils
+package jakdb.utils
 
 import java.util.*
-import kotlin.jakdb.*
-import kotlin.jakdb.data.mysql.*
+import jakdb.data.mysql.*
+import jakdb.jda
+import jakdb.usersTime
 
 @Synchronized
 fun updateStats() {

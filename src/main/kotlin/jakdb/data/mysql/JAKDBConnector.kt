@@ -1,13 +1,15 @@
-package kotlin.jakdb.data.mysql
+package jakdb.data.mysql
 
+import jakdb.settings
+import jakdb.utils.debug
+import jakdb.utils.info
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
-import java.io.FileReader
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
 import java.sql.SQLException
-import kotlin.jakdb.utils.*
+import jakdb.utils.*
 
 var con: Connection? = null
     private set
@@ -15,7 +17,19 @@ var con: Connection? = null
 fun setup() {
     val parser = JSONParser()
     try {
-        FileReader("settings.json").use { reader ->
+        val mysql = settings?.get("mysql") as JSONObject
+        debug("MySQL: $mysql")
+        val host = mysql["host"] as String
+        val port = mysql["port"] as Int
+        val database = mysql["database"] as String
+        val user = mysql["user"] as String
+        val password = mysql["user"] as String
+        val args = mysql["args"] as String
+        debug("Trying to create connection...")
+        con = DriverManager.getConnection("jdbc:mysql://$host:$port/$database?autoReconnect=true&$args", user, password)
+        info("Connection to MySQL created!")
+
+        /*FileReader("settings.json").use { reader ->
             val `object` = parser.parse(reader)
             val json = `object` as JSONObject
             val mysql = json["mysql"] as JSONObject
@@ -29,7 +43,7 @@ fun setup() {
             debug("Trying to create connection...")
             con = DriverManager.getConnection("jdbc:mysql://$host:$port/$database?autoReconnect=true&$args", user, password)
             info("Connection to MySQL created!")
-        }
+        }*/
     } catch (e: Exception) {
         error(e)
     }

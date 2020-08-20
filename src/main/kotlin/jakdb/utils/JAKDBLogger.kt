@@ -1,8 +1,7 @@
-package kotlin.jakdb.utils
+package jakdb.utils
 
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.jakdb.JAKDB
 
 private val RESET = "\u001B[0m"
 private val RED = "\u001B[31m"
@@ -21,7 +20,7 @@ fun info(message: String) {
 }
 
 fun debug(message: String) {
-    if (kotlin.jakdb.debug) {
+    if (jakdb.debug) {
         val date = Date()
         val format = SimpleDateFormat("'" + PURPLE + "['hh:mm:ss'/'dd.MM.yyyy'] " + CYAN + "@ DEBUG »" + RESET + "'")
         println(format.format(date) + message)

@@ -1,7 +1,8 @@
-package kotlin.jakdb.data.mysql
+package jakdb.data.mysql
 
+import jakdb.utils.debug
 import java.sql.SQLException
-import kotlin.jakdb.utils.*
+import jakdb.utils.*
 
 @Synchronized
 fun createTables() {

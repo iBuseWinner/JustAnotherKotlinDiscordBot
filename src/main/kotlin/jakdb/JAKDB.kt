@@ -1,5 +1,9 @@
-package kotlin.jakdb
+package jakdb
 
+import jakdb.data.mysql.createTables
+import jakdb.data.mysql.setup
+import jakdb.main.events.JAKDBEventer
+import jakdb.utils.*
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
@@ -7,9 +11,6 @@ import net.dv8tion.jda.api.requests.GatewayIntent
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
 import java.io.FileReader
-import kotlin.jakdb.data.mysql.*
-import kotlin.jakdb.main.events.JAKDBEventer
-import kotlin.jakdb.utils.*
 
 var debug = true
 var version = "0.0.1 ALPHA"
@@ -49,7 +50,7 @@ class JAKDB {
                             .build()
                 }
             } catch (e: Exception) {
-                error(e)
+                jakdb.utils.error(e)
             }
             info("Trying to connect to MySQL...")
             setup()
