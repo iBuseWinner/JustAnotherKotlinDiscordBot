@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="JAKDB">
+    <output-path>$PROJECT_DIR$/../../../../JADB</output-path>
+    <root id="archive" name="JAKDB.jar">
+      <element id="module-output" name="JAKDB.main" />
+    </root>
+  </artifact>
+</component>

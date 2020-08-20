@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
 import java.io.FileReader
+import kotlin.jakdb.data.mysql.*
 import kotlin.jakdb.main.events.JAKDBEventer
 import kotlin.jakdb.utils.*
 
