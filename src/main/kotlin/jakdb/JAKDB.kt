@@ -8,12 +8,13 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
+import net.dv8tion.jda.api.utils.cache.CacheFlag
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 var debug = true
-var version = "0.0.53 ALPHA"
+var version = "0.0.55 ALPHA"
 var authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
@@ -44,6 +45,7 @@ fun main(args: Array<String>) {
                 debug("Building JDA...")
                 jda = JDABuilder.createLight(token, GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES)
                         .addEventListeners(JAKDBEventer())
+                        .disableCache(CacheFlag.ACTIVITY)
                         .setActivity(Activity.listening("users"))
                         .build()
             }
