@@ -4,12 +4,8 @@ import jakdb.settings
 import jakdb.utils.debug
 import jakdb.utils.info
 import org.json.simple.JSONObject
-import org.json.simple.parser.JSONParser
-import java.sql.Connection
-import java.sql.DriverManager
-import java.sql.ResultSet
-import java.sql.SQLException
 import jakdb.utils.*
+import java.sql.*
 
 var con: Connection? = null
     private set
@@ -45,16 +41,13 @@ fun disconnect() {
     }
 }
 
-@Synchronized
-fun exec(sql: String?, vararg args: String?) {
+/*@Synchronized
+fun exec(sql: String?) {
     setup()
     try {
-        con!!.prepareStatement(sql).use { ps ->
-            var i = 1
-            for (arg in args) {
-                ps.setString(i++, arg)
+        getStat(sql).use { ps -> {
+            ps?.executeUpdate()
             }
-            ps.executeUpdate()
         }
     } catch (e: SQLException) {
         error(e)
@@ -62,17 +55,57 @@ fun exec(sql: String?, vararg args: String?) {
 }
 
 @Synchronized
-fun get(sql: String?, vararg args: String?): ResultSet? {
+fun getStat(sql: String?): PreparedStatement? {
     setup()
     try {
-        con!!.prepareStatement(sql).use { ps ->
-            var i = 1
-            for (arg in args) {
-                ps.setString(i++, arg)
+        return con!!.prepareStatement(sql)
+    } catch (e: SQLException) {
+        error(e)
+    }
+    return null
+}
+
+@Synchronized
+fun get(sql: String?): ResultSet? {
+    setup()
+    try {
+        getStat(sql).use { ps ->
+            if (ps != null) {
+                return ps.executeQuery()
             }
-            ps.closeOnCompletion()
-            return ps.executeQuery()
         }
+    } catch (e: SQLException) {
+        error(e)
+    }
+    return null
+}*/
+
+@Synchronized
+fun getStat(sql: String): PreparedStatement? {
+    setup()
+    try {
+        return con?.prepareStatement(sql)
+    } catch (e: SQLException) {
+        error(e)
+    }
+    return null
+}
+
+@Synchronized
+fun sendExecute(sql: String) {
+    setup()
+    try {
+        getStat(sql)?.executeUpdate()
+    } catch (e: SQLException) {
+        error(e)
+    }
+}
+
+@Synchronized
+fun sendQuery(sql: String): ResultSet? {
+    setup()
+    try {
+        return getStat(sql)?.executeQuery()
     } catch (e: SQLException) {
         error(e)
     }

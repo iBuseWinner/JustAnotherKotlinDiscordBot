@@ -13,7 +13,7 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 var debug = true
-var version = "0.0.18 ALPHA"
+var version = "0.0.53 ALPHA"
 var authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
@@ -48,7 +48,7 @@ fun main(args: Array<String>) {
                         .build()
             }
         } catch (e: Exception) {
-            jakdb.utils.error(e)
+            error(e)
         }
         info("Trying to connect to MySQL...")
         setup()

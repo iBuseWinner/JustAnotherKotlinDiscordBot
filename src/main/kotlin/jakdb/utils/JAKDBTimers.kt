@@ -15,6 +15,8 @@ fun updateStats() {
             } else {
                 jda!!.getGuildChannelById(678526767731965952L)!!.manager.setName("Guilds ⇒ " + jda!!.guilds.size).queue()
                 jda!!.getGuildChannelById(678526806604906497L)!!.manager.setName("Users ⇒ " + usersCount())
+
+                debug("Users and Guilds channels updated!")
             }
         }
     }, 1000, 1000)
