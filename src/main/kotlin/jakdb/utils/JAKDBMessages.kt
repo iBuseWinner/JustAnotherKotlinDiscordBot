@@ -1,17 +1,27 @@
 package jakdb.utils
 
+import jakdb.utils.enums.Language
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.MessageBuilder
+import net.dv8tion.jda.api.entities.Guild
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
 import org.json.simple.parser.ParseException
 import java.awt.Color
+import java.io.FileReader
 
 @Synchronized
-fun getMessage(lang: Int, module: String, message: String): String {
-    
-    return "No messages"
+fun getMessage(lang: Int, module: String, message: String): MessageBuilder {
+    try {
+        val parser = JSONParser()
+        FileReader("/messages/modules/$module/${Language.valueOf("$lang")}").use { reader ->
+            debug("Getting message $message from module $module by lang $lang...")
+            val obj = parser.parse(reader) as JSONObject
+            return fromJSONToEmbeddedMessage(obj[message] as String)
+        }
+    } catch (e: NullPointerException) { error(e) }
+    return MessageBuilder().setContent("message not found")
 }
 
 @Synchronized
@@ -30,7 +40,9 @@ fun fromJSONToEmbeddedMessage(message: String): MessageBuilder {
     if(json.size == 0) return msgBuilder
 
     try {
-        val content = json["content"] as String
+        val content = (json["content"] as String)
+                .replace("@everyone", "<@еvеryone>")
+                .replace("@here","<@hеrе>")
         msgBuilder.setContent(content)
     } catch(ignored: NullPointerException) { }
 

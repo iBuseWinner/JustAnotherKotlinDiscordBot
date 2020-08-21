@@ -14,7 +14,7 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 var debug = true
-var version = "0.0.55 ALPHA"
+var version = "0.1.0 ALPHA"
 var authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
