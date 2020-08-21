@@ -52,7 +52,6 @@ fun usersCount(): Long {
     val rs = sendQuery(count)
     try {
         if (rs!!.next()) {
-            debug("ResultSet has next!")
             val `in` = rs.getInt("COUNT(`uuid`)")
             debug("Users count: $`in`")
             rs.close()

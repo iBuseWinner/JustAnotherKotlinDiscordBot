@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.entities.ChannelType
 
 class JAKDBEventer : ListenerAdapter() {
     override fun onMessageReceived(e: MessageReceivedEvent) {
+        if(e.author.isBot) return
+
         if(!isUserExists(e.author.idLong)) {
             debug("User ${e.author.idLong} isn't exists so add him to MySQL")
             addUser(e.author.idLong)
