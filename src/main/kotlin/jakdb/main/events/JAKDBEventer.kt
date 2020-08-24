@@ -26,10 +26,10 @@ class JAKDBEventer : ListenerAdapter() {
             onMsgForLevel(e)
         }
 
-        //ToDo: command & level systems
+        //ToDo: command system
     }
 
-    fun onMsgForLevel(e: MessageReceivedEvent) {
+    private fun onMsgForLevel(e: MessageReceivedEvent) {
         if(!e.isFromType(ChannelType.TEXT)) {
             return
         }
@@ -47,16 +47,15 @@ class JAKDBEventer : ListenerAdapter() {
         var mult: Long = 1
         var time = 60L
         if(rank!! == 2 && rank == 3) {
-            mult = 2
+            mult = 3
             time = 55L
         } else if(rank in 4..8) {
-            mult = 3
+            mult = 4
             time = 40L
         }
 
         val xpADD = 2*mult
         addXP(id, xpADD)
-        if(id == 278924636622815232) { debug("My owner 278924636622815232 got $xpADD because he write message") }
 
         val totalXPToLevelUp = currLevel?.plus(1)?.times(33)?.plus(9)
 
@@ -76,10 +75,10 @@ class JAKDBEventer : ListenerAdapter() {
                 val lang = getGuildLang(e.guild.idLong)
                 e.channel.sendMessage(getMessage(lang, "XP", "levelup", map).build()).queue()
                 debug("User $id level-up to level ${currLevel+1} and got reward ${reward}!")
+
             }
         }
 
         addTimer(id, 0, time)
-
     }
 }
