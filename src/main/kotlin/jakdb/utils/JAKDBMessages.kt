@@ -1,9 +1,7 @@
 package jakdb.utils
 
-import jakdb.utils.enums.Language
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.MessageBuilder
-import net.dv8tion.jda.api.entities.Guild
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
@@ -15,10 +13,10 @@ import java.io.FileReader
 fun getMessage(lang: Int, module: String, message: String, replace: HashMap<String, String>): MessageBuilder {
     try {
         val parser = JSONParser()
-        FileReader("/messages/modules/$module/${Language.valueOf("$lang")}").use { reader ->
+        FileReader("messages/modules/$module/${fromIdToLang(lang)}.json").use { reader ->
             debug("Getting message $message from module $module by lang $lang...")
-            val msg = (parser.parse(reader) as JSONObject)[message] as String
-            replace.forEach { msg.replace(it.key, it.value) }
+            var msg = (parser.parse(reader) as JSONObject)[message] as String
+            replace.forEach { msg = msg.replace(it.key, it.value) }
 //            for(str in replace.keys) {
 //                msg = replace[str]?.let { msg.replace(str, it) }.toString()
 //            }
@@ -76,9 +74,9 @@ fun fromJSONToEmbeddedMessage(message: String): MessageBuilder {
         } catch (ignored: NullPointerException) { }
 
         try {
-            val color = (embed["color"] as Long).toInt()
-            embedB.setColor(Color(color))
-        } catch (ignored: NullPointerException) { embedB.setColor(jakdb.utils.enums.Color.NOTHING.ordinal) }
+            val color = (embed["color"] as String)
+            embedB.setColor(fromStringToColor(color))
+        } catch (ignored: NullPointerException) { embedB.setColor(fromStringToColor("nothing")) }
 
         try {
             val thumbUrl = (embed["thumbnail"] as JSONObject)["url"] as String
@@ -153,4 +151,24 @@ fun fromJSONToEmbeddedMessage(message: String): MessageBuilder {
     }
 
     return msgBuilder
+}
+
+@Synchronized
+fun fromIdToLang(id: Int): String {
+    when (id) {
+        0 -> return "en_US"
+        1 -> return "ru_RU"
+    }
+
+    return "en_US"
+}
+
+@Synchronized
+fun fromStringToColor(str: String): Color {
+    when (str) {
+        "succ" -> return Color(64, 215, 1)
+        "fail" -> return Color(215, 1, 1)
+    }
+
+    return Color(229, 226, 1)
 }

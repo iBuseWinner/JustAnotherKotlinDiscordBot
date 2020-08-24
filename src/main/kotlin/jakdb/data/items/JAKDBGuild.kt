@@ -1,6 +1,5 @@
 package jakdb.data.items
 
-import jakdb.utils.enums.Language
 import java.sql.ResultSet
 import java.sql.SQLException
 import java.sql.Timestamp
@@ -14,7 +13,7 @@ class JAKDBGuild (rs: ResultSet) {
     var banReason: String = "Not banned"
     var banTime: Timestamp = Timestamp(System.currentTimeMillis())
     var regTime: Timestamp = Timestamp(System.currentTimeMillis())
-    var langId: Language = Language.en_US
+    var langId: Int = 0
 
     fun JAKDBGuild(rs: ResultSet) {
         try {
@@ -24,7 +23,7 @@ class JAKDBGuild (rs: ResultSet) {
             banReason = rs.getString("banReason")
             banTime = rs.getTimestamp("banTime")
             regTime = rs.getTimestamp("regTime")
-            langId = Language.valueOf(""+rs.getInt("lang_ID"))
+            langId = rs.getInt("lang_ID")
         } catch (e: SQLException) {
             error(e)
         }

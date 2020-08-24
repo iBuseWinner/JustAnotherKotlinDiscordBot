@@ -40,9 +40,9 @@ class JAKDBEventer : ListenerAdapter() {
         }
 
         val user = getUser(id)
-        val rank = user?.rank?.id
+        val rank = user?.rank
         val currLevel = user?.globalLVL
-        val currXP = user?.globalXP
+        var currXP = user?.globalXP
 
         var mult: Long = 1
         var time = 60L
@@ -56,19 +56,22 @@ class JAKDBEventer : ListenerAdapter() {
 
         val xpADD = 2*mult
         addXP(id, xpADD)
+        currXP = currXP?.plus(xpADD)
 
         val totalXPToLevelUp = currLevel?.plus(1)?.times(33)?.plus(9)
 
         if (currXP != null) {
+            //debug("Users $id current XP: $currXP and total XP: $totalXPToLevelUp")
             if(currXP >= totalXPToLevelUp!!) {
+                currLevel.plus(1)
                 val map: HashMap<String, String> = HashMap()
 
-                map["<level.last>"] = "$currLevel"
-                map["<level.current>"] = "${currLevel+1}"
-                map["<level.next>"] = "${currLevel+2}"
+                map["<level.last>"] = "${currLevel-1}"
+                map["<level.current>"] = "$currLevel"
+                map["<level.next>"] = "${currLevel+1}"
 
                 val reward: Long = 1*(currLevel*mult)
-                map["<level.reward>"] = "${currLevel*1}"
+                map["<level.reward>"] = "$reward"
                 map["<symbol.money>"] = symbolMoney
                 levelUp(id, reward)
 
