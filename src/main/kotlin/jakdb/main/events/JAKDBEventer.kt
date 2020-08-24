@@ -22,7 +22,6 @@ class JAKDBEventer : ListenerAdapter() {
                 debug("Guild ${e.guild.idLong} isn't exists so add it to MySQL")
                 addGuild(e.guild.idLong)
             }
-
             onMsgForLevel(e)
         }
 

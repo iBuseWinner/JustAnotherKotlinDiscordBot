@@ -13,13 +13,13 @@ import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
-var debug = true
-var version = "0.1.10 ALPHA"
-var authors = arrayOf("BuseSo#6824")
+const val debug = true
+const val version = "0.1.10 ALPHA"
+val authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
-var usersTime = 600L
-var defPrefix = "!"
+const val usersTime = 600L
+const val defPrefix = "!"
 
 var symbolMoney = "<:wheat:747106658471116910>"
 
