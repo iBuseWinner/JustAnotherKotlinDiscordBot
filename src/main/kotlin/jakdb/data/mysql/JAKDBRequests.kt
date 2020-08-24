@@ -209,6 +209,6 @@ fun levelUp(discordId: Long, reward: Long) {
 
 @Synchronized
 fun addXP(discordId: Long, xp: Long) {
-    val add = "UPDATE `jadb_users` SET `global_XP`=$xp WHERE `discordId`=$discordId;"
+    val add = "UPDATE `jadb_users` SET `global_XP`=`global_XP`+$xp WHERE `discordId`=$discordId;"
     sendExecute(add)
 }
