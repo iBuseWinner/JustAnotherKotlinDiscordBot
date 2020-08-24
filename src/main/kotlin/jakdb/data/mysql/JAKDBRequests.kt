@@ -197,7 +197,6 @@ fun isTimerExists(discordId: Long, type: Int): Boolean {
             return true
         }
     }
-    debug("TimedUser $discordId isn't exists!")
     return false
 }
 

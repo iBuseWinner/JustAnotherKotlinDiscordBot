@@ -14,16 +14,10 @@ fun getMessage(lang: Int, module: String, message: String, replace: HashMap<Stri
     try {
         val parser = JSONParser()
         FileReader("messages/modules/$module/${fromIdToLang(lang)}.json").use { reader ->
-            debug("Getting message $message from module $module by lang $lang...")
             var msg = (parser.parse(reader) as JSONObject)[message] as String
             replace.forEach { msg = msg.replace(it.key, it.value) }
-//            for(str in replace.keys) {
-//                msg = replace[str]?.let { msg.replace(str, it) }.toString()
-//            }
 
             return fromJSONToEmbeddedMessage(msg)
-            //val obj = parser.parse(reader) as JSONObject
-            //return fromJSONToEmbeddedMessage(obj[message] as String)
         }
     } catch (e: NullPointerException) { error(e) }
     return MessageBuilder().setContent("message not found")
@@ -93,7 +87,7 @@ fun fromJSONToEmbeddedMessage(message: String): MessageBuilder {
             footer = embed["footer"] as JSONObject
         } catch (ignored: NullPointerException) { }
 
-        if(footer.size == 2) {
+        if(footer.size >= 1) {
             try {
                 val footText = footer["text"] as String
                 val footIcon = footer["icon_url"] as String
