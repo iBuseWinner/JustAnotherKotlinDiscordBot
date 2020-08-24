@@ -1,10 +1,11 @@
 package jakdb.main.events
 
 import jakdb.data.mysql.*
+import jakdb.symbolMoney
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import jakdb.utils.debug
-import jakdb.utils.fromJSONToEmbeddedMessage
+import jakdb.utils.getMessage
 import net.dv8tion.jda.api.entities.ChannelType
 
 class JAKDBEventer : ListenerAdapter() {
@@ -21,6 +22,64 @@ class JAKDBEventer : ListenerAdapter() {
                 debug("Guild ${e.guild.idLong} isn't exists so add it to MySQL")
                 addGuild(e.guild.idLong)
             }
+
+            onMsgForLevel(e)
         }
+
+        //ToDo: command & level systems
+    }
+
+    fun onMsgForLevel(e: MessageReceivedEvent) {
+        if(!e.isFromType(ChannelType.TEXT)) {
+            return
+        }
+
+        val id = e.author.idLong
+        if(isTimerExists(id, 0)) {
+            return
+        }
+
+        val user = getUser(id)
+        val rank = user?.rank?.id
+        val currLevel = user?.globalLVL
+        val currXP = user?.globalXP
+
+        var mult: Long = 1
+        var time = 60L
+        if(rank!! == 2 && rank == 3) {
+            mult = 2
+            time = 55L
+        } else if(rank in 4..8) {
+            mult = 3
+            time = 40L
+        }
+
+        val xpADD = 2*mult
+        addXP(id, xpADD)
+        if(id == 278924636622815232) { debug("My owner 278924636622815232 got $xpADD because he write message") }
+
+        val totalXPToLevelUp = currLevel?.plus(1)?.times(33)?.plus(9)
+
+        if (currXP != null) {
+            if(currXP >= totalXPToLevelUp!!) {
+                val map: HashMap<String, String> = HashMap()
+
+                map["<level.last>"] = "$currLevel"
+                map["<level.current>"] = "${currLevel+1}"
+                map["<level.next>"] = "${currLevel+2}"
+
+                val reward: Long = 1*(currLevel*mult)
+                map["<level.reward>"] = "${currLevel*1}"
+                map["<symbol.money>"] = symbolMoney
+                levelUp(id, reward)
+
+                val lang = getGuildLang(e.guild.idLong)
+                e.channel.sendMessage(getMessage(lang, "XP", "levelup", map).build()).queue()
+                debug("User $id level-up to level ${currLevel+1} and got reward ${reward}!")
+            }
+        }
+
+        addTimer(id, 0, time)
+
     }
 }

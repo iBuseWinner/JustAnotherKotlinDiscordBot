@@ -2,7 +2,7 @@ package jakdb
 
 import jakdb.data.mysql.createTables
 import jakdb.data.mysql.setup
-import jakdb.main.events.JAKDBEventer
+import jakdb.main.events.*
 import jakdb.utils.*
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
@@ -14,24 +14,26 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 var debug = true
-var version = "0.0.55 ALPHA"
+var version = "0.1.0 ALPHA"
 var authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
 var usersTime = 600L
 var defPrefix = "!"
 
+var symbolMoney = "<:wheat:747106658471116910>"
+
 fun main(args: Array<String>) {
     val start = System.currentTimeMillis()
-    info("JADB starting...")
+    info("JAKDB starting...")
     debug("Oh, you use debug! Awesome!")
     info("Trying to create files...")
     createAllFiles()
     debug("Start putting default settings.json")
     if (putDefaultSettings()) {
         info("Please, configure settings.json!")
-        info("JADB version " + version + " by [" + java.lang.String.join(", ", *authors) + "] " +
-                "disabled in " + (System.currentTimeMillis() - start) + " ms!")
+        info("JAKDB version $version by [${java.lang.String.join(", ", *authors)}] " +
+                "disabled in ${System.currentTimeMillis() - start} ms!")
         System.exit(1)
     } else {
         debug("settings.json isn't default so starting the bot...")
@@ -63,6 +65,9 @@ fun main(args: Array<String>) {
         removingCds()
         info("Registering commands...")
         registerCommands()
+
+        info("JAKDB version $version by [${java.lang.String.join(", ", *authors)}] " +
+                "started in ${System.currentTimeMillis() - start} ms!")
     }
 }
 

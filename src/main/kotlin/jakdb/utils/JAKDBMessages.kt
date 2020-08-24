@@ -1,5 +1,6 @@
 package jakdb.utils
 
+import jakdb.utils.enums.Language
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.MessageBuilder
 import org.json.simple.JSONArray
@@ -7,11 +8,26 @@ import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
 import org.json.simple.parser.ParseException
 import java.awt.Color
+import java.io.FileReader
 
 @Synchronized
-fun getMessage(lang: Int, module: String, message: String): String {
-    
-    return "No messages"
+fun getMessage(lang: Int, module: String, message: String, replace: HashMap<String, String>): MessageBuilder {
+    try {
+        val parser = JSONParser()
+        FileReader("/messages/modules/$module/${Language.valueOf("$lang")}").use { reader ->
+            debug("Getting message $message from module $module by lang $lang...")
+            val msg = (parser.parse(reader) as JSONObject)[message] as String
+            replace.forEach { msg.replace(it.key, it.value) }
+//            for(str in replace.keys) {
+//                msg = replace[str]?.let { msg.replace(str, it) }.toString()
+//            }
+
+            return fromJSONToEmbeddedMessage(msg)
+            //val obj = parser.parse(reader) as JSONObject
+            //return fromJSONToEmbeddedMessage(obj[message] as String)
+        }
+    } catch (e: NullPointerException) { error(e) }
+    return MessageBuilder().setContent("message not found")
 }
 
 @Synchronized
@@ -30,7 +46,9 @@ fun fromJSONToEmbeddedMessage(message: String): MessageBuilder {
     if(json.size == 0) return msgBuilder
 
     try {
-        val content = json["content"] as String
+        val content = (json["content"] as String)
+                .replace("@everyone", "<@еvеryone>")
+                .replace("@here","<@hеrе>")
         msgBuilder.setContent(content)
     } catch(ignored: NullPointerException) { }
 
@@ -59,7 +77,7 @@ fun fromJSONToEmbeddedMessage(message: String): MessageBuilder {
         try {
             val color = (embed["color"] as Long).toInt()
             embedB.setColor(Color(color))
-        } catch (ignored: NullPointerException) { }
+        } catch (ignored: NullPointerException) { embedB.setColor(jakdb.utils.enums.Color.NOTHING.ordinal) }
 
         try {
             val thumbUrl = (embed["thumbnail"] as JSONObject)["url"] as String

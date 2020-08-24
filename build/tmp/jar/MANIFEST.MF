@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Class-Path: libs/JDA.jar libs/json-simple.jar libs/trove-3.0.3.jar lib
+ s/slf4j-api-1.7.28.jar libs/commons-collections4-4.1.jar libs/okhttp-
+ 3.13.0.jar libs/okio-jvm-2.7.0.jar
+Main-Class: jakdb.JAKDBKt
+

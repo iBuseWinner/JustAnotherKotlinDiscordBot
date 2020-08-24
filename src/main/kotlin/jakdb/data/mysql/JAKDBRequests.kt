@@ -1,5 +1,6 @@
 package jakdb.data.mysql
 
+import jakdb.data.items.JAKDBGuild
 import jakdb.data.items.JAKDBUser
 import jakdb.utils.debug
 import java.sql.SQLException
@@ -123,6 +124,42 @@ fun addGuild(discordId: Long) {
 }
 
 @Synchronized
+fun getGuild(discordId: Long): JAKDBGuild? {
+    val getUser = "SELECT * FROM `jadb_guilds` WHERE `discordId`=$discordId;"
+    val res: ResultSet? = sendQuery(getUser)
+    try {
+        if (res != null) {
+            if (res.next()) {
+                val guild = JAKDBGuild(res)
+                res.close()
+                return guild
+            }
+        }
+    } catch (e: SQLException) {
+        error(e)
+    }
+    return null
+}
+
+@Synchronized
+fun getGuildLang(discordId: Long): Int {
+    val getLang = "SELECT `lang_ID` FROM `jadb_guilds` WHERE `discordId`=$discordId;"
+    val res: ResultSet? = sendQuery(getLang)
+    try {
+        if(res != null) {
+            if(res.next()) {
+                val lang = res.getInt("lang_ID")
+                res.close()
+                return lang
+            }
+        }
+    } catch (e: SQLException) {
+        error(e)
+    }
+    return 0
+}
+
+@Synchronized
 fun isGuildExists(discordId: Long): Boolean {
     val ise = "SELECT * FROM `jadb_guilds` WHERE `discordId`=$discordId;"
     val res: ResultSet? = sendQuery(ise)
@@ -143,6 +180,13 @@ fun addTimer(discordId: Long, type: Int, time: Long) {
     debug("TimedUser $discordId was added to MySQL!")
 }
 
+/**
+ * Timer types:
+ * 0 - XP
+ * 1 - COMMANDS
+ * 2 - DAILY REWARDS
+ * ...soon
+ */
 @Synchronized
 fun isTimerExists(discordId: Long, type: Int): Boolean {
     val ise = "SELECT * FROM `jadb_guilds` WHERE `discordId`=$discordId AND `type`=$type;"
@@ -155,4 +199,16 @@ fun isTimerExists(discordId: Long, type: Int): Boolean {
     }
     debug("TimedUser $discordId isn't exists!")
     return false
+}
+
+@Synchronized
+fun levelUp(discordId: Long, reward: Long) {
+    val lvl = "UPDATE `jadb_users` SET `global_LVL`=`global_LVL`+1, `global_XP`=0, `global_COINS`=`global_COINS`+$reward WHERE `discordId`=$discordId;"
+    sendExecute(lvl)
+}
+
+@Synchronized
+fun addXP(discordId: Long, xp: Long) {
+    val add = "UPDATE `jadb_users` SET `global_XP`=$xp WHERE `discordId`=$discordId;"
+    sendExecute(add)
 }
