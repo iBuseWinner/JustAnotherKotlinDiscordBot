@@ -15,20 +15,20 @@ private const val WHITE = "\u001B[37m"
 
 fun info(message: String) {
     val date = Date()
-    val format = SimpleDateFormat("'" + GREEN + "['hh:mm:ss'/'dd.MM.yyyy'] " + YELLOW + "@ INFO >>" + RESET + "'")
+    val format = SimpleDateFormat("'" + GREEN + "['hh:mm:ss'/'dd.MM.yyyy'] " + YELLOW + "@ INFO >>" + RESET + " '")
     println(format.format(date) + message)
 }
 
 fun debug(message: String) {
     if (jakdb.debug) {
         val date = Date()
-        val format = SimpleDateFormat("'" + PURPLE + "['hh:mm:ss'/'dd.MM.yyyy'] " + CYAN + "@ DEBUG >>" + RESET + "'")
+        val format = SimpleDateFormat("'" + PURPLE + "['hh:mm:ss'/'dd.MM.yyyy'] " + CYAN + "@ DEBUG >>" + RESET + " '")
         println(format.format(date) + message)
     }
 }
 
 fun error(ex: Exception) {
     val date = Date()
-    val format = SimpleDateFormat("'" + RED + "['hh:mm:ss'/'dd.MM.yyyy'] @ ERROR >>" + RESET + "'")
+    val format = SimpleDateFormat("'" + RED + "['hh:mm:ss'/'dd.MM.yyyy'] @ ERROR >>" + RESET + " '")
     println(format.format(date) + ex.message)
 }

@@ -211,3 +211,17 @@ fun addXP(discordId: Long, xp: Long) {
     val add = "UPDATE `jadb_users` SET `global_XP`=`global_XP`+$xp WHERE `discordId`=$discordId;"
     sendExecute(add)
 }
+
+@Synchronized
+fun getTimeCd(discordId: Long, type: Int): Long {
+    val time = "SELECT `timeLeft` FROM `jadb_timers` WHERE `discordId`=$discordId AND `type`=$type;"
+    val res: ResultSet? = sendQuery(time)
+    if(res != null) {
+        if(res.next()) {
+            val time = res.getLong("timeLeft")
+            res.close()
+            return time
+        }
+    }
+    return 0
+}

@@ -1,10 +1,13 @@
 package jakdb.main.events
 
+import jakdb.commands
 import jakdb.data.mysql.*
+import jakdb.defPrefix
 import jakdb.symbolMoney
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import jakdb.utils.debug
+import jakdb.utils.getDebugMessage
 import jakdb.utils.getMessage
 import net.dv8tion.jda.api.entities.ChannelType
 
@@ -25,7 +28,7 @@ class JAKDBEventer : ListenerAdapter() {
             onMsgForLevel(e)
         }
 
-        //ToDo: command system
+        onMsgForCommand(e)
     }
 
     private fun onMsgForLevel(e: MessageReceivedEvent) {
@@ -46,10 +49,10 @@ class JAKDBEventer : ListenerAdapter() {
         var mult: Long = 1
         var time = 60L
         if(rank!! == 2 && rank == 3) {
-            mult = 3
+            mult = 2
             time = 55L
         } else if(rank in 4..8) {
-            mult = 4
+            mult = 3
             time = 40L
         }
 
@@ -82,5 +85,45 @@ class JAKDBEventer : ListenerAdapter() {
         }
 
         addTimer(id, 0, time)
+    }
+
+    private fun onMsgForCommand(e: MessageReceivedEvent) {
+        var msg = e.message.contentRaw
+        if(msg.startsWith(defPrefix)) {
+            msg = msg.substring(1)
+            for(cmd in commands) {
+                if(msg.startsWith(cmd.command) || cmd.aliases.contains(msg.toLowerCase())) {
+                    val user = getUser(e.author.idLong)
+
+                    if (user != null) {
+                        debug("User ${user.discordId} tried to use command")
+                        if(user.rank >= cmd.rank) {
+                            if(!isTimerExists(user.discordId, 1)) {
+                                msg = msg.substring(cmd.command.length+1)
+                                if(e.channelType == ChannelType.TEXT) {
+                                    cmd.execute(e.channel, e.author, msg)
+                                } else {
+                                    if(cmd.guildOnly) {
+                                        val replace = HashMap<String, String>()
+                                        e.channel.sendMessage(getDebugMessage("guildOnly", replace).build()).queue()
+                                    } else {
+                                        cmd.execute(e.channel, e.author, msg)
+                                    }
+                                }
+                            } else {
+                                val replace = HashMap<String, String>()
+                                replace["<command.cooldown>"] = "${getTimeCd(user.discordId, 1)}"
+                                replace["<command.name>"] = cmd.command
+                                e.channel.sendMessage(getDebugMessage("cooldown", replace).build()).queue()
+                            }
+                        } else {
+                            val replace = HashMap<String, String>()
+                            replace["<command.rank>"] = "${cmd.rank}"
+                            e.channel.sendMessage(getDebugMessage("noRank", replace).build()).queue()
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -24,6 +24,20 @@ fun getMessage(lang: Int, module: String, message: String, replace: HashMap<Stri
 }
 
 @Synchronized
+fun getDebugMessage(message: String, replace: HashMap<String, String>): MessageBuilder {
+    try {
+        val parser = JSONParser()
+        FileReader("messages/global/debug/en_US.json").use { reader ->
+            var msg = (parser.parse(reader) as JSONObject)[message] as String
+            replace.forEach { msg = msg.replace(it.key, it.value) }
+
+            return fromJSONToEmbeddedMessage(msg)
+        }
+    } catch (e: NullPointerException) { error(e) }
+    return MessageBuilder().setContent("message not found")
+}
+
+@Synchronized
 fun fromJSONToEmbeddedMessage(message: String): MessageBuilder {
     val parser = JSONParser()
     var json = JSONObject()
