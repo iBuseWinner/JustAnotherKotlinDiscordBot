@@ -2,10 +2,13 @@ package jakdb
 
 import jakdb.data.mysql.createTables
 import jakdb.data.mysql.setup
+import jakdb.main.commands.ICommand
+import jakdb.main.commands.modules.xp.Level
 import jakdb.main.events.*
 import jakdb.utils.*
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
+import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.cache.CacheFlag
@@ -14,12 +17,14 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 const val debug = true
-const val version = "0.1.10 ALPHA"
+const val version = "0.1.11 ALPHA"
 val authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
 const val usersTime = 600L
 const val defPrefix = "!"
+
+var commands: ArrayList<ICommand> = ArrayList()
 
 var symbolMoney = "<:wheat:747106658471116910>"
 
@@ -73,5 +78,10 @@ fun main(args: Array<String>) {
 
 @Synchronized
 fun registerCommands() {
-    //ToDo
+    val lvl = Level("level", 0, true, "${defPrefix}level",
+            0, "Check level", Permission.UNKNOWN, "XP", arrayOf("lvl","xp"))
+
+    commands.add(lvl)
+
+
 }
