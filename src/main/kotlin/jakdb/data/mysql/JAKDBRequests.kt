@@ -189,7 +189,7 @@ fun addTimer(discordId: Long, type: Int, time: Long) {
  */
 @Synchronized
 fun isTimerExists(discordId: Long, type: Int): Boolean {
-    val ise = "SELECT * FROM `jadb_guilds` WHERE `discordId`=$discordId AND `type`=$type;"
+    val ise = "SELECT * FROM `jadb_timers` WHERE `discordId`=$discordId AND `type`=$type;"
     val res: ResultSet? = sendQuery(ise)
     if(res != null) {
         if(res.next()) {
