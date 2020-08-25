@@ -4,12 +4,9 @@ import jakdb.commands
 import jakdb.data.mysql.*
 import jakdb.defPrefix
 import jakdb.symbolMoney
-import jakdb.utils.command
+import jakdb.utils.*
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
-import jakdb.utils.debug
-import jakdb.utils.getDebugMessage
-import jakdb.utils.getMessage
 import net.dv8tion.jda.api.entities.ChannelType
 
 class JAKDBEventer : ListenerAdapter() {
@@ -121,7 +118,7 @@ class JAKDBEventer : ListenerAdapter() {
                                 } else {
                                     if(cmd.guildOnly) {
                                         val replace = HashMap<String, String>()
-                                        e.channel.sendMessage(getDebugMessage("guildOnly", replace).build()).queue()
+                                        e.channel.sendMessage(getGlobalMessage("guildOnly", replace).build()).queue()
                                     } else {
                                         cmd.execute(e.channel, e.message, e.author, args)
                                         command("${user.discordId}", cmd.command, args, e.channel.id)
