@@ -15,20 +15,27 @@ private const val WHITE = "\u001B[37m"
 
 fun info(message: String) {
     val date = Date()
-    val format = SimpleDateFormat("'" + GREEN + "['hh:mm:ss'/'dd.MM.yyyy'] " + YELLOW + "@ INFO >>" + RESET + " '")
+    val format = SimpleDateFormat("'$GREEN['HH:mm:ss'/'dd.MM.yyyy'] $YELLOW@ INFO >>$RESET '")
     println(format.format(date) + message)
+}
+
+fun command(userId: String, command: String, args: String, channel: String) {
+    val date = Date()
+    val format = SimpleDateFormat("'$GREEN['HH:mm:ss'/'dd.MM.yyyy'] $BLUE@ CMD >>$RESET '")
+    println(format.format(date) + "User $BLUE$userId$RESET used cmd " +
+            "$BLUE$command$RESET in channel $BLUE$channel$RESET with args $BLUE$args$RESET")
 }
 
 fun debug(message: String) {
     if (jakdb.debug) {
         val date = Date()
-        val format = SimpleDateFormat("'" + PURPLE + "['hh:mm:ss'/'dd.MM.yyyy'] " + CYAN + "@ DEBUG >>" + RESET + " '")
+        val format = SimpleDateFormat("'$PURPLE['HH:mm:ss'/'dd.MM.yyyy'] $CYAN@ DEBUG >>$RESET '")
         println(format.format(date) + message)
     }
 }
 
 fun error(ex: Exception) {
     val date = Date()
-    val format = SimpleDateFormat("'" + RED + "['hh:mm:ss'/'dd.MM.yyyy'] @ ERROR >>" + RESET + " '")
+    val format = SimpleDateFormat("'$RED['HH:mm:ss'/'dd.MM.yyyy'] @ ERROR >> '")
     println(format.format(date) + ex.message)
 }

@@ -1,6 +1,7 @@
 package jakdb.main.commands
 
 import net.dv8tion.jda.api.Permission
+import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.entities.User
 
@@ -18,6 +19,6 @@ abstract class ICommand (command: String, rank: Int, test: Boolean, usage: Strin
     val aliases: Array<String> = aliases
     val guildOnly: Boolean = guildOnly
 
-    abstract fun execute(channel: MessageChannel, user: User, args: String)
+    abstract fun execute(channel: MessageChannel, msg: Message, user: User, args: String)
 
 }

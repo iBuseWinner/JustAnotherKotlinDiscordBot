@@ -177,7 +177,7 @@ fun isGuildExists(discordId: Long): Boolean {
 fun addTimer(discordId: Long, type: Int, time: Long) {
     val add = "INSERT INTO `jadb_timers` (`discordId`,`type`,`timeLeft`) VALUES ('$discordId','$type','$time');"
     sendExecute(add)
-    debug("TimedUser $discordId was added to MySQL!")
+    debug("TimedUser $discordId - $type - $time was added to MySQL!")
 }
 
 /**

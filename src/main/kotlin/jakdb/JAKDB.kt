@@ -17,11 +17,11 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 const val debug = true
-const val version = "0.1.11 ALPHA"
+const val version = "0.1.32 ALPHA"
 val authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
-const val usersTime = 600L
+var usersTime = 600L
 const val defPrefix = "!"
 
 var commands: ArrayList<ICommand> = ArrayList()
@@ -79,7 +79,7 @@ fun main(args: Array<String>) {
 @Synchronized
 fun registerCommands() {
     val lvl = Level("level", 0, true, "${defPrefix}level",
-            0, "Check level", Permission.UNKNOWN, "XP", arrayOf("lvl","xp"))
+            0, "Check level", Permission.UNKNOWN, "XP", arrayOf("lvl","xp"), true)
 
     commands.add(lvl)
 

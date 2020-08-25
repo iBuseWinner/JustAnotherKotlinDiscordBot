@@ -4,6 +4,7 @@ import jakdb.commands
 import jakdb.data.mysql.*
 import jakdb.defPrefix
 import jakdb.symbolMoney
+import jakdb.utils.command
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import jakdb.utils.debug
@@ -49,11 +50,11 @@ class JAKDBEventer : ListenerAdapter() {
         var mult: Long = 1
         var time = 60L
         if(rank!! == 2 && rank == 3) {
-            mult = 2
-            time = 55L
+            mult += 1
+            time -= 5L
         } else if(rank in 4..8) {
-            mult = 3
-            time = 40L
+            mult += 2
+            time -= 10L
         }
 
         val xpADD = 2*mult
@@ -99,15 +100,31 @@ class JAKDBEventer : ListenerAdapter() {
                         debug("User ${user.discordId} tried to use command")
                         if(user.rank >= cmd.rank) {
                             if(!isTimerExists(user.discordId, 1)) {
-                                msg = msg.substring(cmd.command.length+1)
+                                if(user.rank < 2) {
+                                    addTimer(user.discordId, 1, 5)
+                                }
+
+                                var argss = msg.split(" ")
+                                if(argss.size > 1) {
+                                    argss = argss.drop(1)
+                                }
+                                var args = ""
+                                if(argss.isNotEmpty()/* && argss[0] == e.message.contentRaw.substring(1)*/) {
+                                    for (str in argss) {
+                                        args += "$str "
+                                    }
+                                }
+
                                 if(e.channelType == ChannelType.TEXT) {
-                                    cmd.execute(e.channel, e.author, msg)
+                                    cmd.execute(e.channel, e.message, e.author, args)
+                                    command("${user.discordId}", cmd.command, args, e.channel.id)
                                 } else {
                                     if(cmd.guildOnly) {
                                         val replace = HashMap<String, String>()
                                         e.channel.sendMessage(getDebugMessage("guildOnly", replace).build()).queue()
                                     } else {
-                                        cmd.execute(e.channel, e.author, msg)
+                                        cmd.execute(e.channel, e.message, e.author, args)
+                                        command("${user.discordId}", cmd.command, args, e.channel.id)
                                     }
                                 }
                             } else {
