@@ -1,5 +1,7 @@
 package jakdb.utils
 
+import jakdb.jda
+import net.dv8tion.jda.api.EmbedBuilder
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -24,6 +26,15 @@ fun command(userId: String, command: String, args: String, channel: String) {
     val format = SimpleDateFormat("'$GREEN['HH:mm:ss'/'dd.MM.yyyy'] $BLUE@ CMD >>$RESET '")
     println(format.format(date) + "User $BLUE$userId$RESET used cmd " +
             "$BLUE$command$RESET in channel $BLUE$channel$RESET with args $BLUE$args$RESET")
+
+    val embed = EmbedBuilder()
+    embed.setTitle("Command logger")
+    embed.setDescription("User **$userId** used command **$command** in channel **$channel** with args **$args**")
+
+    val otherFormat = SimpleDateFormat("'['HH:mm:ss'/'dd.MM.yyyy']'")
+    embed.setFooter("Time: ${otherFormat.format(date)}")
+
+    jda?.getTextChannelById(678651613228957747)?.sendMessage(embed.build())?.queue()
 }
 
 fun debug(message: String) {

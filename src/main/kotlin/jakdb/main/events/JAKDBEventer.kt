@@ -112,8 +112,10 @@ class JAKDBEventer : ListenerAdapter() {
                                     }
                                 }
 
+                                args = args.substring(0, args.length-1)
+
                                 if(e.channelType == ChannelType.TEXT) {
-                                    if(e.textChannel.guild.getMemberById(user.discordId)?.hasPermission(cmd.perm)!!) {
+                                    if(e.message.member?.hasPermission(cmd.perm)!!) {
                                         cmd.execute(e.channel, e.message, e.author, args)
                                         command("${user.discordId}", cmd.command, args, e.channel.id)
                                     } else {

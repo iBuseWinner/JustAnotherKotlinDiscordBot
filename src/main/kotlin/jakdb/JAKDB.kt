@@ -18,7 +18,7 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 const val debug = true
-const val version = "0.1.39 ALPHA"
+const val version = "0.1.47 ALPHA"
 val authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
@@ -51,7 +51,7 @@ fun main(args: Array<String>) {
                 settings = obj as JSONObject
                 val token = settings!!["token"] as String
                 debug("Building JDA...")
-                jda = JDABuilder.createLight(token, GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES)
+                jda = JDABuilder.createLight(token, GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MEMBERS)
                         .addEventListeners(JAKDBEventer())
                         .disableCache(CacheFlag.ACTIVITY)
                         .setActivity(Activity.listening("users"))

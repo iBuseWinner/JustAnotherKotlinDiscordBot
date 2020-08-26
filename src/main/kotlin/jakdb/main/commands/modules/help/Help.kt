@@ -4,6 +4,7 @@ import jakdb.commands
 import jakdb.data.mysql.getGuildLang
 import jakdb.jda
 import jakdb.main.commands.ICommand
+import jakdb.utils.debug
 import jakdb.utils.getMessage
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Message
@@ -29,10 +30,8 @@ class Help(command: String, rank: Int, test: Boolean,
 
         for(hcmd in commands) {
             if(hcmd.command == args.toLowerCase() || hcmd.aliases.contains(args.toLowerCase())) {
-                cmd = true
-
                 replace["<command.name>"] = hcmd.command
-                replace["<command.aliases>"] = hcmd.aliases.toString()
+                replace["<command.aliases>"] = formatAliases(hcmd.aliases)
                 replace["<command.rank>"] = "${hcmd.rank}"
                 replace["<command.test>"] = "${hcmd.test}"
                 replace["<command.usage>"] = hcmd.usage
@@ -41,8 +40,9 @@ class Help(command: String, rank: Int, test: Boolean,
                 replace["<command.perm>"] = hcmd.perm.toString()
                 replace["<command.module>"] = hcmd.module
                 replace["<command.guildOnly>"] = "${hcmd.guildOnly}"
-
                 lang?.let { getMessage(it, "Help", "aboutcommand", replace) }?.build()?.let { channel.sendMessage(it).queue() }
+
+                cmd = true
             }
         }
 
@@ -50,6 +50,14 @@ class Help(command: String, rank: Int, test: Boolean,
             lang?.let { getMessage(it, "Help", "help", replace) }?.build()?.let { channel.sendMessage(it).queue() }
         }
 
+    }
+
+    private fun formatAliases(aliases: Array<String>): String {
+        var ret = "["
+        for(str in aliases) {
+            ret += "$str, "
+        }
+        return ret.substring(0, ret.length-2) + "]"
     }
 
 }
