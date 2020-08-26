@@ -90,7 +90,7 @@ class JAKDBEventer : ListenerAdapter() {
         if(msg.startsWith(defPrefix)) {
             msg = msg.substring(1)
             for(cmd in commands) {
-                if(msg.startsWith(cmd.command) || cmd.aliases.contains(msg.toLowerCase())) {
+                if(msg.toLowerCase().startsWith(cmd.command) || cmd.aliases.contains(msg.toLowerCase())) {
                     val user = getUser(e.author.idLong)
 
                     if (user != null) {

@@ -89,9 +89,8 @@ fun fromJSONToEmbeddedMessage(message: String): MessageBuilder {
     if(embed.size > 0) {
         try {
             val embedTitle = embed["title"] as String
-            val url = embed["url"] as String
-            if(url != null) {
-                embedB.setTitle(embedTitle, url)
+            if((embed["url"] as String) != null || (embed["url"] as String).length > 0) {
+                embedB.setTitle(embedTitle, embed["url"] as String)
             } else {
                 embedB.setTitle(embedTitle)
             }
@@ -125,9 +124,8 @@ fun fromJSONToEmbeddedMessage(message: String): MessageBuilder {
         if(footer.size >= 1) {
             try {
                 val footText = footer["text"] as String
-                val footIcon = footer["icon_url"] as String
-                if(footIcon != null) {
-                    embedB.setFooter(footText, footIcon)
+                if((footer["icon_url"] as String) != null) {
+                    embedB.setFooter(footText, footer["icon_url"] as String)
                 } else {
                     embedB.setFooter(footText)
                 }
@@ -142,13 +140,11 @@ fun fromJSONToEmbeddedMessage(message: String): MessageBuilder {
         if(author.size > 0) {
             try {
                 val autText = author["name"] as String
-                val autUrl = author["url"] as String
-                val autIcon = author["icon_url"] as String
 
-                if(autUrl != null && autIcon != null) {
-                    embedB.setAuthor(autText, autUrl, autIcon)
-                } else if(autIcon == null && autUrl != null) {
-                    embedB.setAuthor(autText, autUrl)
+                if((author["url"] as String) != null && (author["icon_url"] as String) != null) {
+                    embedB.setAuthor(autText, author["url"] as String, author["icon_url"] as String)
+                } else if((author["icon_url"] as String) == null && (author["url"] as String) != null) {
+                    embedB.setAuthor(autText, author["url"] as String)
                 } else {
                     embedB.setAuthor(autText)
                 }
