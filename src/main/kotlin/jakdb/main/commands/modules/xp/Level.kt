@@ -4,7 +4,6 @@ import jakdb.data.mysql.getGuildLang
 import jakdb.data.mysql.getUser
 import jakdb.jda
 import jakdb.main.commands.ICommand
-import jakdb.utils.debug
 import jakdb.utils.getGlobalMessage
 import jakdb.utils.getMessage
 import net.dv8tion.jda.api.Permission
@@ -21,7 +20,7 @@ class Level(command: String, rank: Int, test: Boolean,
     override fun execute(channel: MessageChannel, msg: Message, user: User, args: String) {
         val lang = jda?.getGuildChannelById(channel.idLong)?.guild?.idLong?.let { getGuildLang(it) }
         val replace = HashMap<String, String>()
-        var own: Boolean = false
+        var own = false
 
         try {
             val tar = getUser(msg.mentionedUsers[0].idLong)

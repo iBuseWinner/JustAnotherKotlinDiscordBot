@@ -113,8 +113,13 @@ class JAKDBEventer : ListenerAdapter() {
                                 }
 
                                 if(e.channelType == ChannelType.TEXT) {
-                                    cmd.execute(e.channel, e.message, e.author, args)
-                                    command("${user.discordId}", cmd.command, args, e.channel.id)
+                                    if(e.textChannel.guild.getMemberById(user.discordId)?.hasPermission(cmd.perm)!!) {
+                                        cmd.execute(e.channel, e.message, e.author, args)
+                                        command("${user.discordId}", cmd.command, args, e.channel.id)
+                                    } else {
+                                        val replace = HashMap<String, String>()
+                                        e.channel.sendMessage(getDebugMessage("noperm", replace).build()).queue()
+                                    }
                                 } else {
                                     if(cmd.guildOnly) {
                                         val replace = HashMap<String, String>()

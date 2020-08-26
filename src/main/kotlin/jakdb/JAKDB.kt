@@ -3,6 +3,7 @@ package jakdb
 import jakdb.data.mysql.createTables
 import jakdb.data.mysql.setup
 import jakdb.main.commands.ICommand
+import jakdb.main.commands.modules.help.Help
 import jakdb.main.commands.modules.xp.Level
 import jakdb.main.events.*
 import jakdb.utils.*
@@ -17,7 +18,7 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 const val debug = true
-const val version = "0.1.38 ALPHA"
+const val version = "0.1.39 ALPHA"
 val authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
@@ -78,10 +79,13 @@ fun main(args: Array<String>) {
 
 @Synchronized
 fun registerCommands() {
-    val lvl = Level("level", 0, true, "${defPrefix}level",
+    val lvl = Level("level", 0, true, "${defPrefix}level [@user]",
             0, "Check level", Permission.UNKNOWN, "XP", arrayOf("lvl","xp"), true)
+    val help = Help("help", 0, true, "${defPrefix}help [command]",
+            0, "View help", Permission.UNKNOWN, "Help", arrayOf("h"), false)
 
     commands.add(lvl)
+    commands.add(help)
 
 
 }
