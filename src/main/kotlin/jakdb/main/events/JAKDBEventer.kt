@@ -102,17 +102,17 @@ class JAKDBEventer : ListenerAdapter() {
                                 }
 
                                 var argss = msg.split(" ")
-                                if(argss.size > 1) {
-                                    argss = argss.drop(1)
-                                }
                                 var args = ""
                                 if(argss.isNotEmpty()/* && argss[0] == e.message.contentRaw.substring(1)*/) {
+                                    argss = argss.drop(1)
                                     for (str in argss) {
                                         args += "$str "
                                     }
                                 }
 
-                                args = args.substring(0, args.length-1)
+                                if(args.isNotEmpty()) {
+                                    args = args.substring(0, args.length - 1)
+                                }
 
                                 if(e.channelType == ChannelType.TEXT) {
                                     if(e.message.member?.hasPermission(cmd.perm)!!) {
@@ -123,13 +123,7 @@ class JAKDBEventer : ListenerAdapter() {
                                         e.channel.sendMessage(getDebugMessage("noperm", replace).build()).queue()
                                     }
                                 } else {
-                                    if(cmd.guildOnly) {
-                                        val replace = HashMap<String, String>()
-                                        e.channel.sendMessage(getGlobalMessage("guildOnly", replace).build()).queue()
-                                    } else {
-                                        cmd.execute(e.channel, e.message, e.author, args)
-                                        command("${user.discordId}", cmd.command, args, e.channel.id)
-                                    }
+                                    e.channel.sendMessage(getGlobalMessage("guildOnly", HashMap()).build()).queue()
                                 }
                             } else {
                                 val replace = HashMap<String, String>()

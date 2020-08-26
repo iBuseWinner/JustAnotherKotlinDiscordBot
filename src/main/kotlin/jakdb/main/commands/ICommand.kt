@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.entities.User
 
 abstract class ICommand (command: String, rank: Int, test: Boolean, usage: String, argsNeed: Int,
-                         desc: String, perm: Permission, module: String, aliases: Array<String>, guildOnly: Boolean) {
+                         desc: String, perm: Permission, module: String, aliases: Array<String>) {
 
     val command: String = command
     var rank: Int = rank
@@ -17,7 +17,6 @@ abstract class ICommand (command: String, rank: Int, test: Boolean, usage: Strin
     val perm: Permission = perm
     val module: String = module
     val aliases: Array<String> = aliases
-    val guildOnly: Boolean = guildOnly
 
     abstract fun execute(channel: MessageChannel, msg: Message, user: User, args: String)
 

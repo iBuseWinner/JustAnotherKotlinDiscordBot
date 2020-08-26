@@ -13,9 +13,8 @@ import net.dv8tion.jda.api.entities.User
 
 class Help(command: String, rank: Int, test: Boolean,
            usage: String, argsNeed: Int, desc: String,
-           perm: Permission, module: String, aliases: Array<String>,
-           guildOnly: Boolean)
-    : ICommand(command, rank, test, usage, argsNeed, desc, perm, module, aliases, guildOnly) {
+           perm: Permission, module: String, aliases: Array<String>)
+    : ICommand(command, rank, test, usage, argsNeed, desc, perm, module, aliases) {
 
     override fun execute(channel: MessageChannel, msg: Message, user: User, args: String) {
 
@@ -24,30 +23,32 @@ class Help(command: String, rank: Int, test: Boolean,
         } catch (e: NullPointerException) {
             0
         }
-
         val replace = HashMap<String, String>()
         var cmd = false
+        if(args.isNotEmpty()) {
+            for (hcmd in commands) {
+                if (hcmd.command == args.toLowerCase() || hcmd.aliases.contains(args.toLowerCase())) {
+                    replace["<command.name>"] = hcmd.command
+                    replace["<command.aliases>"] = formatAliases(hcmd.aliases)
+                    replace["<command.rank>"] = "${hcmd.rank}"
+                    replace["<command.test>"] = "${hcmd.test}"
+                    replace["<command.usage>"] = hcmd.usage
+                    replace["<command.argsNeed>"] = "${hcmd.argsNeed}"
+                    replace["<command.desc>"] = hcmd.desc
+                    replace["<command.perm>"] = hcmd.perm.toString()
+                    replace["<command.module>"] = hcmd.module
+                    lang?.let { getMessage(it, "Help", "aboutcommand", replace) }?.build()?.let { channel.sendMessage(it).queue() }
 
-        for(hcmd in commands) {
-            if(hcmd.command == args.toLowerCase() || hcmd.aliases.contains(args.toLowerCase())) {
-                replace["<command.name>"] = hcmd.command
-                replace["<command.aliases>"] = formatAliases(hcmd.aliases)
-                replace["<command.rank>"] = "${hcmd.rank}"
-                replace["<command.test>"] = "${hcmd.test}"
-                replace["<command.usage>"] = hcmd.usage
-                replace["<command.argsNeed>"] = "${hcmd.argsNeed}"
-                replace["<command.desc>"] = hcmd.desc
-                replace["<command.perm>"] = hcmd.perm.toString()
-                replace["<command.module>"] = hcmd.module
-                replace["<command.guildOnly>"] = "${hcmd.guildOnly}"
-                lang?.let { getMessage(it, "Help", "aboutcommand", replace) }?.build()?.let { channel.sendMessage(it).queue() }
-
-                cmd = true
+                    cmd = true
+                }
             }
         }
 
         if(!cmd) {
-            lang?.let { getMessage(it, "Help", "help", replace) }?.build()?.let { channel.sendMessage(it).queue() }
+            user.openPrivateChannel().queue()
+
+            val build = lang?.let { getMessage(it, "Help", "help", replace) }?.build()
+            build?.let { channel.sendMessage(it).queue() }
         }
 
     }

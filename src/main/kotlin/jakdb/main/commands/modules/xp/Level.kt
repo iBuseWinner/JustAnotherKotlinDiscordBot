@@ -13,9 +13,8 @@ import net.dv8tion.jda.api.entities.User
 
 class Level(command: String, rank: Int, test: Boolean,
             usage: String, argsNeed: Int, desc: String,
-            perm: Permission, module: String, aliases: Array<String>,
-            guildOnly: Boolean)
-    : ICommand(command, rank, test, usage, argsNeed, desc, perm, module, aliases, guildOnly) {
+            perm: Permission, module: String, aliases: Array<String>)
+    : ICommand(command, rank, test, usage, argsNeed, desc, perm, module, aliases) {
 
     override fun execute(channel: MessageChannel, msg: Message, user: User, args: String) {
         val lang = jda?.getGuildChannelById(channel.idLong)?.guild?.idLong?.let { getGuildLang(it) }
