@@ -3,7 +3,10 @@ package jakdb
 import jakdb.data.mysql.createTables
 import jakdb.data.mysql.setup
 import jakdb.main.commands.ICommand
+import jakdb.main.commands.modules.help.About
+import jakdb.main.commands.modules.help.Commands
 import jakdb.main.commands.modules.help.Help
+import jakdb.main.commands.modules.help.Modules
 import jakdb.main.commands.modules.secret.AboutBot
 import jakdb.main.commands.modules.xp.Level
 import jakdb.main.events.*
@@ -19,7 +22,7 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 const val debug = true
-const val version = "0.1.62 ALPHA"
+const val version = "0.1.72 ALPHA"
 val authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
@@ -27,8 +30,10 @@ var usersTime = 600L
 const val defPrefix = "!"
 
 var commands: ArrayList<ICommand> = ArrayList()
-
 var symbolMoney = "<:wheat:747106658471116910>"
+var commandsUsed = 0L
+var totalXPgain = 0L
+
 
 fun main(args: Array<String>) {
     val start = System.currentTimeMillis()
@@ -87,10 +92,21 @@ fun registerCommands() {
 
     val aboutbot = AboutBot("aboutbot", 7, false, "${defPrefix}aboutbot",
             0, "Send information", Permission.ADMINISTRATOR, "Secret", arrayOf("aboutme"))
+    
+    val modules = Modules("modules", 0, true, "${defPrefix}modules",
+            0, "Show available modules", Permission.UNKNOWN, "Help", arrayOf("mdls"))
+
+    val cmds = Commands("commands", 0, true, "${defPrefix}commands <module>",
+            0, "Show commands of module", Permission.UNKNOWN, "Help", arrayOf("cmds"))
+
+    val about = About("about", 0, true, "${defPrefix}about",
+            0, "Show info and stats", Permission.UNKNOWN, "Help", arrayOf("statistics", "stats"))
 
     commands.add(lvl)
     commands.add(help)
     commands.add(aboutbot)
-
+    commands.add(modules)
+    commands.add(cmds)
+    commands.add(about)
 
 }
