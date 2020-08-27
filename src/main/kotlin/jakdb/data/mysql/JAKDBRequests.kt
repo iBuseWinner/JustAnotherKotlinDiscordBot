@@ -54,7 +54,6 @@ fun usersCount(): Long {
     try {
         if (rs!!.next()) {
             val `in` = rs.getInt("COUNT(`uuid`)")
-            debug("Users count: $`in`")
             rs.close()
             return `in`.toLong()
         }
@@ -210,6 +209,32 @@ fun levelUp(discordId: Long, reward: Long) {
 fun addXP(discordId: Long, xp: Long) {
     val add = "UPDATE `jadb_users` SET `global_XP`=`global_XP`+$xp WHERE `discordId`=$discordId;"
     sendExecute(add)
+}
+
+@Synchronized
+fun removeCoins(discordId: Long, coins: Long) {
+    val add = "UPDATE `jadb_users` SET `global_COINS`=`global_COINS`-$coins WHERE `discordId`=$discordId;"
+    sendExecute(add)
+}
+
+@Synchronized
+fun addCoins(discordId: Long, coins: Long) {
+    val add = "UPDATE `jadb_users` SET `global_COINS`=`global_COINS`+$coins WHERE `discordId`=$discordId;"
+    sendExecute(add)
+}
+
+@Synchronized
+fun getCoins(discordId: Long): Long {
+    val coins = "SELECT `global_COINS` FROM `jadb_users` WHERE `discordId`=$discordId;"
+    val res: ResultSet? = sendQuery(coins)
+    if(res != null) {
+        if(res.next()) {
+            val amount = res.getLong("global_COINS")
+            res.close()
+            return amount
+        }
+    }
+    return 0
 }
 
 @Synchronized

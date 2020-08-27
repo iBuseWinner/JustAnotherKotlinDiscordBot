@@ -2,6 +2,7 @@ package jakdb.main.commands.modules.secret
 
 import jakdb.jda
 import jakdb.main.commands.ICommand
+import jakdb.utils.debug
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.MessageChannel
@@ -19,14 +20,12 @@ class Send(command: String, rank: Int, test: Boolean,
         try {
             val channelId = a[0]
             try {
-                jda?.getTextChannelById(channelId)?.sendMessage(args.substring(channelId.length+1))?.queue()
+                val text = args.substring(channelId.length+1)
+                jda?.getTextChannelById(channelId)?.sendMessage(text)?.queue()
+                debug(text)
             } catch (e: NullPointerException) {
-                try {
-                    jda?.getPrivateChannelById(channelId)?.sendMessage(args.substring(channelId.length+1))?.queue()
-                } catch (e: NullPointerException) {
-                    channel.sendMessage("Channel not found!").queue {
-                        it.delete().queueAfter(20, TimeUnit.SECONDS)
-                    }
+                channel.sendMessage("Channel not found!").queue {
+                    it.delete().queueAfter(20, TimeUnit.SECONDS)
                 }
             }
         } catch (e: NumberFormatException) {

@@ -1,5 +1,6 @@
 package jakdb.main.commands.modules.secret
 
+import jakdb.data.mysql.disconnect
 import jakdb.jda
 import jakdb.main.commands.ICommand
 import net.dv8tion.jda.api.Permission
@@ -21,6 +22,8 @@ class End(command: String, rank: Int, test: Boolean,
                         it.editMessage("Bot will shutdown in 5 seconds").queueAfter(5, TimeUnit.SECONDS) {
                             it.delete().queueAfter(5, TimeUnit.SECONDS) {
                                 jda?.shutdown()
+                                disconnect()
+                                kotlin.system.exitProcess(2)
                             }
                         }
                     }

@@ -137,13 +137,17 @@ class JAKDBEventer : ListenerAdapter() {
                                         args = args.substring(0, args.length - 1)
                                     }
 
+                                    if(cmd.argsNeed > args.length) {
+                                        e.channel.sendMessage(getDebugMessage("noargs", HashMap()).build()).queue()
+                                        return
+                                    }
+
                                     if (e.message.member?.hasPermission(cmd.perm)!!) {
                                         cmd.execute(e.channel, e.message, e.author, args)
                                         commandsUsed++
                                         command("${user.discordId}", cmd.command, args, e.channel.id)
                                     } else {
-                                        val replace = HashMap<String, String>()
-                                        e.channel.sendMessage(getDebugMessage("noperm", replace).build()).queue()
+                                        e.channel.sendMessage(getDebugMessage("noperm", HashMap()).build()).queue()
                                     }
                                 } else {
                                     val replace = HashMap<String, String>()

@@ -4,6 +4,8 @@ import jakdb.data.mysql.createTables
 import jakdb.data.mysql.setup
 import jakdb.main.commands.ICommand
 import jakdb.main.commands.modules.economy.Balance
+import jakdb.main.commands.modules.economy.Casino
+import jakdb.main.commands.modules.economy.DailyReward
 import jakdb.main.commands.modules.games.EightBall
 import jakdb.main.commands.modules.help.About
 import jakdb.main.commands.modules.help.Commands
@@ -26,7 +28,7 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 const val debug = true
-const val version = "0.2.0 ALPHA"
+const val version = "0.2.4 ALPHA"
 val authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
@@ -119,6 +121,12 @@ fun registerCommands() {
     val balance = Balance("balance", 0, true, "${defPrefix}balance [@user]",
             0, "Check your/other user balance", Permission.UNKNOWN, "Economy", arrayOf("bal","money","gold","coins"))
 
+    val casino = Casino("casino", 0, true, "${defPrefix}casino <bet>",
+            1, "Play casino to get more money", Permission.UNKNOWN, "Economy", arrayOf("bet", "gamble"))
+
+    val dailyreward = DailyReward("dailyreward", 0, true, "${defPrefix}dailyreward",
+            0, "Get daily rewards", Permission.UNKNOWN, "Economy", arrayOf("dr", "daily", "dailyrewards"))
+
     commands.add(lvl)
     commands.add(help)
     commands.add(aboutbot)
@@ -129,5 +137,7 @@ fun registerCommands() {
     commands.add(send)
     commands.add(eightBall)
     commands.add(balance)
+    commands.add(casino)
+    commands.add(dailyreward)
 
 }
