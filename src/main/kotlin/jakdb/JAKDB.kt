@@ -3,6 +3,7 @@ package jakdb
 import jakdb.data.mysql.createTables
 import jakdb.data.mysql.setup
 import jakdb.main.commands.ICommand
+import jakdb.main.commands.modules.admin.Say
 import jakdb.main.commands.modules.economy.Balance
 import jakdb.main.commands.modules.economy.Casino
 import jakdb.main.commands.modules.economy.DailyReward
@@ -28,7 +29,7 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 const val debug = true
-const val version = "0.2.4 ALPHA"
+const val version = "0.2.5 ALPHA"
 val authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
@@ -127,6 +128,9 @@ fun registerCommands() {
     val dailyreward = DailyReward("dailyreward", 0, true, "${defPrefix}dailyreward",
             0, "Get daily rewards", Permission.UNKNOWN, "Economy", arrayOf("dr", "daily", "dailyrewards"))
 
+    val say = Say("say", 0, true, "${defPrefix}say <text/json>",
+            1, "Write what you wrote in args", Permission.MESSAGE_MANAGE, "Administration", arrayOf("repeat", "write"))
+
     commands.add(lvl)
     commands.add(help)
     commands.add(aboutbot)
@@ -139,5 +143,6 @@ fun registerCommands() {
     commands.add(balance)
     commands.add(casino)
     commands.add(dailyreward)
+    commands.add(say)
 
 }
