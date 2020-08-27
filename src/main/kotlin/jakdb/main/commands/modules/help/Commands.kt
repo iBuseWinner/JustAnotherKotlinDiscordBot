@@ -29,9 +29,13 @@ class Commands(command: String, rank: Int, test: Boolean,
             }
 
             val replace = HashMap<String, String>()
-            replace["<commands.list>"] = format(comds)
-
-            channel.sendMessage(getMessage(lang!!, "Help", "commandsList", replace).build()).queue()
+            val format = format(comds)
+            if(format == "exc") {
+                channel.sendMessage(getMessage(lang!!, "Help", "commandsEmpty", HashMap()).build()).queue()
+            } else {
+                replace["<commands.list>"] = format
+                channel.sendMessage(getMessage(lang!!, "Help", "commandsList", replace).build()).queue()
+            }
         }
     }
 
@@ -40,8 +44,11 @@ class Commands(command: String, rank: Int, test: Boolean,
         for(ass in arr) {
             str += "$ass, "
         }
-
-        str = str.substring(0, str.length-2)
+        try {
+            str = str.substring(0, str.length - 2)
+        } catch (e: StringIndexOutOfBoundsException) {
+            str = "exc"
+        }
 
         return str
     }

@@ -3,13 +3,17 @@ package jakdb
 import jakdb.data.mysql.createTables
 import jakdb.data.mysql.setup
 import jakdb.main.commands.ICommand
+import jakdb.main.commands.modules.economy.Balance
+import jakdb.main.commands.modules.games.EightBall
 import jakdb.main.commands.modules.help.About
 import jakdb.main.commands.modules.help.Commands
 import jakdb.main.commands.modules.help.Help
 import jakdb.main.commands.modules.help.Modules
 import jakdb.main.commands.modules.secret.AboutBot
+import jakdb.main.commands.modules.secret.End
+import jakdb.main.commands.modules.secret.Send
 import jakdb.main.commands.modules.xp.Level
-import jakdb.main.events.*
+import jakdb.main.events.JAKDBEventer
 import jakdb.utils.*
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
@@ -22,7 +26,7 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 const val debug = true
-const val version = "0.1.72 ALPHA"
+const val version = "0.2.0 ALPHA"
 val authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
@@ -31,6 +35,7 @@ const val defPrefix = "!"
 
 var commands: ArrayList<ICommand> = ArrayList()
 var symbolMoney = "<:wheat:747106658471116910>"
+var symbolGold = "<:gold:747104154043809922>"
 var commandsUsed = 0L
 var totalXPgain = 0L
 
@@ -46,7 +51,7 @@ fun main(args: Array<String>) {
         info("Please, configure settings.json!")
         info("JAKDB version $version by [${java.lang.String.join(", ", *authors)}] " +
                 "disabled in ${System.currentTimeMillis() - start} ms!")
-        System.exit(1)
+        kotlin.system.exitProcess(1)
     } else {
         debug("settings.json isn't default so starting the bot...")
         val parser = JSONParser()
@@ -97,10 +102,22 @@ fun registerCommands() {
             0, "Show available modules", Permission.UNKNOWN, "Help", arrayOf("mdls"))
 
     val cmds = Commands("commands", 0, true, "${defPrefix}commands <module>",
-            0, "Show commands of module", Permission.UNKNOWN, "Help", arrayOf("cmds"))
+            1, "Show commands of module", Permission.UNKNOWN, "Help", arrayOf("cmds"))
 
     val about = About("about", 0, true, "${defPrefix}about",
             0, "Show info and stats", Permission.UNKNOWN, "Help", arrayOf("statistics", "stats"))
+
+    val end = End("end", 7, true, "${defPrefix}end",
+            0, "Stop the bot", Permission.ADMINISTRATOR, "Secret", arrayOf("stop","disablebot","endbot","stopbot"))
+
+    val send =  Send("send", 7, true, "${defPrefix}send <channel> <message>",
+            2, "Sends message to the channel", Permission.ADMINISTRATOR, "Secret", arrayOf("sendmessage","sendmsg"))
+
+    val eightBall = EightBall("8ball", 0, true, "${defPrefix}8ball <question>",
+            1, "Ask 8ball a question", Permission.UNKNOWN, "Games", arrayOf("eightball"))
+
+    val balance = Balance("balance", 0, true, "${defPrefix}balance [@user]",
+            0, "Check your/other user balance", Permission.UNKNOWN, "Economy", arrayOf("bal","money","gold","coins"))
 
     commands.add(lvl)
     commands.add(help)
@@ -108,5 +125,9 @@ fun registerCommands() {
     commands.add(modules)
     commands.add(cmds)
     commands.add(about)
+    commands.add(end)
+    commands.add(send)
+    commands.add(eightBall)
+    commands.add(balance)
 
 }
