@@ -23,7 +23,7 @@ class Commands(command: String, rank: Int, test: Boolean,
         } else {
             val comds: ArrayList<String> = ArrayList()
             for(cmd in commands) {
-                if(cmd.module == args) {
+                if(cmd.module.toLowerCase() == args.toLowerCase()) {
                     comds.add(cmd.command)
                 }
             }

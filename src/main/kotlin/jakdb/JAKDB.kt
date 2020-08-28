@@ -8,6 +8,9 @@ import jakdb.main.commands.modules.economy.Balance
 import jakdb.main.commands.modules.economy.Casino
 import jakdb.main.commands.modules.economy.DailyReward
 import jakdb.main.commands.modules.games.EightBall
+import jakdb.main.commands.modules.games.Profile
+import jakdb.main.commands.modules.games.ProfileLink
+import jakdb.main.commands.modules.games.ProfileMessage
 import jakdb.main.commands.modules.help.About
 import jakdb.main.commands.modules.help.Commands
 import jakdb.main.commands.modules.help.Help
@@ -15,6 +18,7 @@ import jakdb.main.commands.modules.help.Modules
 import jakdb.main.commands.modules.secret.AboutBot
 import jakdb.main.commands.modules.secret.End
 import jakdb.main.commands.modules.secret.Send
+import jakdb.main.commands.modules.utils.ProfileDebug
 import jakdb.main.commands.modules.xp.Level
 import jakdb.main.events.JAKDBEventer
 import jakdb.utils.*
@@ -29,7 +33,7 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 const val debug = true
-const val version = "0.2.5 ALPHA"
+const val version = "0.2.13 ALPHA"
 val authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
@@ -131,6 +135,18 @@ fun registerCommands() {
     val say = Say("say", 0, true, "${defPrefix}say <text/json>",
             1, "Write what you wrote in args", Permission.MESSAGE_MANAGE, "Administration", arrayOf("repeat", "write"))
 
+    val profile = Profile("profile", 0, true, "${defPrefix}profile [@user]",
+            0, "Check profile", Permission.UNKNOWN, "Games", arrayOf("checkprofile","getprofile"))
+
+    val setmessage = ProfileMessage("setmessage", 0, true, "${defPrefix}setmessage <message>",
+            1, "Set message in your profile", Permission.UNKNOWN, "Games", arrayOf("setmsg","profilemessage","profmsg"))
+
+    val setlink = ProfileLink("setlink", 0, true, "${defPrefix}setlink <link>",
+            1, "Set link in your profile", Permission.UNKNOWN, "Games", arrayOf("profilelink","proflnk"))
+
+    val setdebug = ProfileDebug("setdebug", 0, true, "${defPrefix}setdebug <true/false>",
+            0, "Set debug to use bot", Permission.UNKNOWN, "Games", arrayOf("profiledebug","debug"))
+
     commands.add(lvl)
     commands.add(help)
     commands.add(aboutbot)
@@ -144,5 +160,9 @@ fun registerCommands() {
     commands.add(casino)
     commands.add(dailyreward)
     commands.add(say)
+    commands.add(profile)
+    commands.add(setmessage)
+    commands.add(setlink)
+    commands.add(setdebug)
 
 }

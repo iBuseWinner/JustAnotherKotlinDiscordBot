@@ -39,12 +39,22 @@ fun createTables() {
             "`type` INT(11) NULL DEFAULT 0," +
             "`timeLeft` BIGINT NULL DEFAULT '0'" +
             ") COLLATE='utf8mb4_unicode_ci';"
+    val userSettings = "CREATE TABLE IF NOT EXISTS `jadb_us_set` (" +
+            "`uuid` VARCHAR(50) NULL DEFAULT UUID()," +
+            "`discordId` BIGINT NULL DEFAULT NULL," +
+            "`profMsg` TEXT(200) NULL DEFAULT NULL," +
+            "`profLink` VARCHAR(50) NULL DEFAULT NULL," +
+            "`debug` TINYINT NULL DEFAULT '0'," +
+            "UNIQUE INDEX `uuid` (`uuid`)" +
+            ") COLLATE='utf8mb4_unicode_ci';"
     debug("MySQL - start creating `jadb_users`")
     sendExecute(users)
     debug("MySQL - start creating `jadb_guilds`")
     sendExecute(guilds)
     debug("MySQL - start creating `jadb_timers`")
     sendExecute(timers)
+    debug("MySQL - start creating `jadb_us_set`")
+    sendExecute(userSettings)
 }
 
 @Synchronized
@@ -249,4 +259,94 @@ fun getTimeCd(discordId: Long, type: Int): Long {
         }
     }
     return 0
+}
+
+@Synchronized
+fun isUsSetExists(id: Long): Boolean {
+    val ise = "SELECT COUNT(`discordId`) FROM `jadb_us_set` WHERE `discordId`=$id;"
+    val res: ResultSet? = sendQuery(ise)
+    if (res != null) {
+        if(res.next()) {
+            val count = res.getInt("COUNT(`discordId`)")
+            res.close()
+            if(count == 1) {
+                return true
+            }
+        }
+    }
+    debug("UserSettings $id isn't exists!")
+    return false
+}
+
+@Synchronized
+fun addUsSet(id: Long) {
+    val add = "INSERT INTO `jadb_us_set` (`discordId`) VALUES ('$id');"
+    sendExecute(add)
+    debug("UserSettings $id added to MySQL!")
+}
+
+@Synchronized
+fun getProfMsg(id: Long): String {
+    val get = "SELECT `profMsg` FROM `jadb_us_set` WHERE `discordId`=$id;"
+    val res: ResultSet? = sendQuery(get)
+    try {
+        if (res != null) {
+            if (res.next()) {
+                val msg = res.getString("profMsg")
+                res.close()
+                return msg
+            }
+        }
+    } catch (e: NullPointerException) { }
+    return ""
+}
+
+@Synchronized
+fun getProfLink(id: Long): String {
+    val get = "SELECT `profLink` FROM `jadb_us_set` WHERE `discordId`=$id;"
+    val res: ResultSet? = sendQuery(get)
+    try {
+        if (res != null) {
+            if (res.next()) {
+                val link = res.getString("profLink")
+                res.close()
+                return link
+            }
+        }
+    } catch (e: NullPointerException) { }
+    return ""
+}
+
+@Synchronized
+fun getUsDebug(id: Long): Boolean {
+    val get = "SELECT `debug` FROM `jadb_us_set` WHERE `discordId`=$id;"
+    val res: ResultSet? = sendQuery(get)
+    if(res != null) {
+        if(res.next()) {
+            val debug = res.getInt("debug")
+            res.close()
+            return debug == 1
+        }
+    }
+    return false
+}
+
+@Synchronized
+fun setUsDebug(id: Long, debug: Boolean) {
+    var deb = 0
+    if(debug) deb = 1
+    val set = "UPDATE `jadb_us_set` SET `debug`=$deb WHERE `discordId`=$id;"
+    sendExecute(set)
+}
+
+@Synchronized
+fun setUsMsg(id: Long, msg: String) {
+    val set = "UPDATE `jadb_us_set` SET `profMsg`='$msg' WHERE `discordId`=$id;"
+    sendExecute(set)
+}
+
+@Synchronized
+fun setUsLink(id: Long, link: String) {
+    val set = "UPDATE `jadb_us_set` SET `profLink`='$link' WHERE `discordId`=$id;"
+    sendExecute(set)
 }

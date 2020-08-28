@@ -17,6 +17,10 @@ class JAKDBEventer : ListenerAdapter() {
             addUser(e.author.idLong)
         }
 
+        if(!isUsSetExists(e.author.idLong)) {
+            addUsSet(e.author.idLong)
+        }
+
         if(e.isFromType(ChannelType.TEXT)) {
             if(!isGuildExists(e.guild.idLong)) {
                 debug("Guild ${e.guild.idLong} isn't exists so add it to MySQL")
@@ -138,7 +142,9 @@ class JAKDBEventer : ListenerAdapter() {
                                     }
 
                                     if(cmd.argsNeed > args.length) {
-                                        e.channel.sendMessage(getDebugMessage("noargs", HashMap()).build()).queue()
+                                        if(getUsDebug(e.author.idLong)) {
+                                            e.channel.sendMessage(getDebugMessage("noargs", HashMap()).build()).queue()
+                                        }
                                         return
                                     }
 
@@ -147,18 +153,24 @@ class JAKDBEventer : ListenerAdapter() {
                                         commandsUsed++
                                         command("${user.discordId}", cmd.command, args, e.channel.id)
                                     } else {
-                                        e.channel.sendMessage(getDebugMessage("noperm", HashMap()).build()).queue()
+                                        if(getUsDebug(e.author.idLong)) {
+                                            e.channel.sendMessage(getDebugMessage("noperm", HashMap()).build()).queue()
+                                        }
                                     }
                                 } else {
                                     val replace = HashMap<String, String>()
                                     replace["<command.cooldown>"] = "${getTimeCd(user.discordId, 1)}"
                                     replace["<command.name>"] = cmd.command
-                                    e.channel.sendMessage(getDebugMessage("cooldown", replace).build()).queue()
+                                    if(getUsDebug(e.author.idLong)) {
+                                        e.channel.sendMessage(getDebugMessage("cooldown", replace).build()).queue()
+                                    }
                                 }
                             } else {
                                 val replace = HashMap<String, String>()
                                 replace["<command.rank>"] = "${cmd.rank}"
-                                e.channel.sendMessage(getDebugMessage("noRank", replace).build()).queue()
+                                if(getUsDebug(e.author.idLong)) {
+                                    e.channel.sendMessage(getDebugMessage("noRank", replace).build()).queue()
+                                }
                             }
                         }
                     }
