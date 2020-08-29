@@ -13,7 +13,7 @@ class JAKDBEventer : ListenerAdapter() {
         if(e.author.isBot) return
 
         if(!isUserExists(e.author.idLong)) {
-            debug("User ${e.author.idLong} isn't exists so add him to MySQL")
+            debug("User ${e.author.id} isn't exists so add him to MySQL")
             addUser(e.author.idLong)
         }
 
@@ -23,8 +23,13 @@ class JAKDBEventer : ListenerAdapter() {
 
         if(e.isFromType(ChannelType.TEXT)) {
             if(!isGuildExists(e.guild.idLong)) {
-                debug("Guild ${e.guild.idLong} isn't exists so add it to MySQL")
+                debug("Guild ${e.guild.id} isn't exists so add it to MySQL")
                 addGuild(e.guild.idLong)
+            }
+
+            if(!isGuildSetExists(e.guild.idLong)) {
+                debug("GuildSettings ${e.guild.id} isn't exists to add it to MySQL")
+                addGuildSettings(e.guild.idLong)
             }
             onMsgForLevel(e)
         }

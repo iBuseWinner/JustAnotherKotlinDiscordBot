@@ -20,7 +20,9 @@ import jakdb.main.commands.modules.secret.End
 import jakdb.main.commands.modules.secret.Send
 import jakdb.main.commands.modules.utils.ProfileDebug
 import jakdb.main.commands.modules.xp.Level
+import jakdb.main.events.GuildsGreeter
 import jakdb.main.events.JAKDBEventer
+import jakdb.main.events.SuggestionsOMG
 import jakdb.utils.*
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
@@ -33,7 +35,7 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 const val debug = true
-const val version = "0.2.13 ALPHA"
+const val version = "0.2.22 ALPHA"
 val authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
@@ -69,8 +71,12 @@ fun main(args: Array<String>) {
                 settings = obj as JSONObject
                 val token = settings!!["token"] as String
                 debug("Building JDA...")
-                jda = JDABuilder.createLight(token, GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MEMBERS)
+                jda = JDABuilder.createLight(token,
+                        GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES,
+                        GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGE_REACTIONS)
                         .addEventListeners(JAKDBEventer())
+                        .addEventListeners(SuggestionsOMG())
+                        .addEventListeners(GuildsGreeter())
                         .disableCache(CacheFlag.ACTIVITY)
                         .setActivity(Activity.listening("users"))
                         .build()

@@ -47,6 +47,17 @@ fun createTables() {
             "`debug` TINYINT NULL DEFAULT '0'," +
             "UNIQUE INDEX `uuid` (`uuid`)" +
             ") COLLATE='utf8mb4_unicode_ci';"
+    val guildSettings = "CREATE TABLE IF NOT EXISTS `jadb_guild_set` (" +
+            "`discordId` BIGINT NULL DEFAULT NULL," +
+            "`helloChannel` BIGINT NULL DEFAULT '0'," +
+            "`helloMessage` TEXT(200) NULL DEFAULT NULL," +
+            "`byeChannel` BIGINT NULL DEFAULT '0'," +
+            "`byeMessage` TEXT(200) NULL DEFAULT NULL," +
+            "`suggestChannel` BIGINT NULL DEFAULT '0'," +
+            "`maxWarns` INT NULL DEFAULT '10'," +
+            "`warnsPunish` TEXT(200) NULL DEFAULT '0:no'," +
+            "`logChannel` BIGINT NULL DEFAULT '0'" +
+            ") COLLATE='utf8mb4_unicode_ci';"
     debug("MySQL - start creating `jadb_users`")
     sendExecute(users)
     debug("MySQL - start creating `jadb_guilds`")
@@ -55,6 +66,8 @@ fun createTables() {
     sendExecute(timers)
     debug("MySQL - start creating `jadb_us_set`")
     sendExecute(userSettings)
+    debug("MySQL - start creating `jadb_guild_set`")
+    sendExecute(guildSettings)
 }
 
 @Synchronized
@@ -348,5 +361,189 @@ fun setUsMsg(id: Long, msg: String) {
 @Synchronized
 fun setUsLink(id: Long, link: String) {
     val set = "UPDATE `jadb_us_set` SET `profLink`='$link' WHERE `discordId`=$id;"
+    sendExecute(set)
+}
+
+@Synchronized
+fun isGuildSetExists(id: Long): Boolean {
+    val ise = "SELECT COUNT(`discordId`) FROM `jadb_guild_set` WHERE `discordId`=$id;"
+    val res: ResultSet? = sendQuery(ise)
+    if (res != null) {
+        if(res.next()) {
+            val count = res.getInt("COUNT(`discordId`)")
+            res.close()
+            if(count == 1) {
+                return true
+            }
+        }
+    }
+    debug("GuildSettings $id isn't exists!")
+    return false
+}
+
+@Synchronized
+fun addGuildSettings(id: Long) {
+    val add = "INSERT INTO `jadb_guild_set` (`discordId`) VALUES ('$id');"
+    sendExecute(add)
+    debug("GuildSettings $id added to MySQL!")
+}
+
+@Synchronized
+fun getHelloChannel(id: Long): Long {
+    val get = "SELECT `helloChannel` FROM `jadb_guild_set` WHERE `discordId`=$id;"
+    val res: ResultSet? = sendQuery(get)
+    if(res != null) {
+        if(res.next()) {
+            val debug = res.getLong("helloChannel")
+            res.close()
+            return debug
+        }
+    }
+    return 0
+}
+
+@Synchronized
+fun getHelloMessage(id: Long): String {
+    val get = "SELECT `helloMessage` FROM `jadb_guild_set` WHERE `discordId`=$id;"
+    val res: ResultSet? = sendQuery(get)
+    if(res != null) {
+        if(res.next()) {
+            val debug = res.getString("helloMessage")
+            res.close()
+            return debug
+        }
+    }
+    return "."
+}
+
+@Synchronized
+fun getByeChannel(id: Long): Long {
+    val get = "SELECT `byeChannel` FROM `jadb_guild_set` WHERE `discordId`=$id;"
+    val res: ResultSet? = sendQuery(get)
+    if(res != null) {
+        if(res.next()) {
+            val debug = res.getLong("byeChannel")
+            res.close()
+            return debug
+        }
+    }
+    return 0
+}
+
+@Synchronized
+fun getByeMessage(id: Long): String {
+    val get = "SELECT `byeMessage` FROM `jadb_guild_set` WHERE `discordId`=$id;"
+    val res: ResultSet? = sendQuery(get)
+    if(res != null) {
+        if(res.next()) {
+            val debug = res.getString("byeMessage")
+            res.close()
+            return debug
+        }
+    }
+    return "."
+}
+
+@Synchronized
+fun getSuggestChannel(id: Long): Long {
+    val get = "SELECT `suggestChannel` FROM `jadb_guild_set` WHERE `discordId`=$id;"
+    val res: ResultSet? = sendQuery(get)
+    if(res != null) {
+        if(res.next()) {
+            val debug = res.getLong("suggestChannel")
+            res.close()
+            return debug
+        }
+    }
+    return 0
+}
+
+@Synchronized
+fun getMaxWarns(id: Long): Int {
+    val get = "SELECT `maxWarns` FROM `jadb_guild_set` WHERE `discordId`=$id;"
+    val res: ResultSet? = sendQuery(get)
+    if(res != null) {
+        if(res.next()) {
+            val debug = res.getInt("maxWarns")
+            res.close()
+            return debug
+        }
+    }
+    return 0
+}
+
+@Synchronized
+fun getWarnsPunish(id: Long): String {
+    val get = "SELECT `warnsPunish` FROM `jadb_guild_set` WHERE `discordId`=$id;"
+    val res: ResultSet? = sendQuery(get)
+    if(res != null) {
+        if(res.next()) {
+            val debug = res.getString("warnsPunish")
+            res.close()
+            return debug
+        }
+    }
+    return "0:no"
+}
+
+@Synchronized
+fun getLogChannel(id: Long): Long {
+    val get = "SELECT `logChannel` FROM `jadb_guild_set` WHERE `discordId`=$id;"
+    val res: ResultSet? = sendQuery(get)
+    if(res != null) {
+        if(res.next()) {
+            val debug = res.getLong("logChannel")
+            res.close()
+            return debug
+        }
+    }
+    return 0
+}
+
+@Synchronized
+fun setHelloChannel(id: Long, channel: Long) {
+    val set = "UPDATE `jadb_guild_set` SET `helloChannel`=$channel WHERE `discordId`=$id;"
+    sendExecute(set)
+}
+
+@Synchronized
+fun setHelloMessage(id: Long, msg: String) {
+    val set = "UPDATE `jadb_guild_set` SET `helloMessage`='$msg' WHERE `discordId`=$id;"
+    sendExecute(set)
+}
+
+@Synchronized
+fun setByeChannel(id: Long, channel: Long) {
+    val set = "UPDATE `jadb_guild_set` SET `byeChannel`=$channel WHERE `discordId`=$id;"
+    sendExecute(set)
+}
+
+@Synchronized
+fun setByeMessage(id: Long, msg: String) {
+    val set = "UPDATE `jadb_guild_set` SET `byeMessage`='$msg' WHERE `discordId`=$id;"
+    sendExecute(set)
+}
+
+@Synchronized
+fun setSuggestChannel(id: Long, channel: Long) {
+    val set = "UPDATE `jadb_guild_set` SET `suggestChannel`=$channel WHERE `discordId`=$id;"
+    sendExecute(set)
+}
+
+@Synchronized
+fun setMaxWarns(id: Long, max: Int) {
+    val set = "UPDATE `jadb_guild_set` SET `maxWarns`=$max WHERE `discordId`=$id;"
+    sendExecute(set)
+}
+
+@Synchronized
+fun setLogChannel(id: Long, channel: Long) {
+    val set = "UPDATE `jadb_guild_set` SET `logChannel`=$channel WHERE `discordId`=$id;"
+    sendExecute(set)
+}
+
+@Synchronized
+fun setWarnsPunish(id: Long, str: String) {
+    val set = "UPDATE `jadb_guild_set` SET `warnsPunish`='$str' WHERE `discordId`=$id;"
     sendExecute(set)
 }
