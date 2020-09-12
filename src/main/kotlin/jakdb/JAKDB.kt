@@ -3,7 +3,9 @@ package jakdb
 import jakdb.data.mysql.createTables
 import jakdb.data.mysql.setup
 import jakdb.main.commands.ICommand
+import jakdb.main.commands.modules.admin.Maxwarns
 import jakdb.main.commands.modules.admin.Say
+import jakdb.main.commands.modules.admin.Suggest
 import jakdb.main.commands.modules.economy.Balance
 import jakdb.main.commands.modules.economy.Casino
 import jakdb.main.commands.modules.economy.DailyReward
@@ -19,6 +21,7 @@ import jakdb.main.commands.modules.secret.AboutBot
 import jakdb.main.commands.modules.secret.End
 import jakdb.main.commands.modules.secret.Send
 import jakdb.main.commands.modules.utils.ProfileDebug
+import jakdb.main.commands.modules.utils.Suggestion
 import jakdb.main.commands.modules.xp.Level
 import jakdb.main.events.GuildsGreeter
 import jakdb.main.events.JAKDBEventer
@@ -35,7 +38,7 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 const val debug = true
-const val version = "0.2.22 ALPHA"
+const val version = "0.3.1 ALPHA"
 val authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
@@ -43,11 +46,17 @@ var usersTime = 600L
 const val defPrefix = "!"
 
 var commands: ArrayList<ICommand> = ArrayList()
-var symbolMoney = "<:wheat:747106658471116910>"
-var symbolGold = "<:gold:747104154043809922>"
+const val symbolMoney = "<:wheat:747106658471116910>"
+const val symbolGold = "<:gold:747104154043809922>"
 var commandsUsed = 0L
 var totalXPgain = 0L
 
+//const val symbolApproved = "<a:approved:748855884096208936>"
+//const val symbolMinus = "<a:minus:748856252435791872>"
+//const val symbolDisapproved = "<a:disapproved:748855883009884292>"
+const val symbolApproved = 748855884096208936
+const val symbolMinus = 748856252435791872
+const val symbolDisapproved = 748855883009884292
 
 fun main(args: Array<String>) {
     val start = System.currentTimeMillis()
@@ -73,7 +82,8 @@ fun main(args: Array<String>) {
                 debug("Building JDA...")
                 jda = JDABuilder.createLight(token,
                         GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES,
-                        GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGE_REACTIONS)
+                        GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                        GatewayIntent.GUILD_EMOJIS)
                         .addEventListeners(JAKDBEventer())
                         .addEventListeners(SuggestionsOMG())
                         .addEventListeners(GuildsGreeter())
@@ -150,8 +160,17 @@ fun registerCommands() {
     val setlink = ProfileLink("setlink", 0, true, "${defPrefix}setlink <link>",
             1, "Set link in your profile", Permission.UNKNOWN, "Games", arrayOf("profilelink","proflnk"))
 
-    val setdebug = ProfileDebug("setdebug", 0, true, "${defPrefix}setdebug <true/false>",
+    val setdebug = ProfileDebug("setdebug", 0, true, "${defPrefix}setdebug",
             0, "Set debug to use bot", Permission.UNKNOWN, "Games", arrayOf("profiledebug","debug"))
+
+    val suggest = Suggest("suggest", 1, true, "${defPrefix}suggest <set/off>",
+            2, "Set channel for suggestions", Permission.MESSAGE_MANAGE, "Admin", arrayOf("suggestadmin","admsuggest"))
+
+    val suggestion = Suggestion("suggestion", 0, true, "${defPrefix}suggestion <text>",
+            1, "Send suggestion in this guild", Permission.UNKNOWN, "Utils", arrayOf("sendsuggest", "wantsuggest"))
+
+    val maxwarns = Maxwarns("maxwarns", 0, true, "${defPrefix}maxwarns [amount]",
+            0, "Get or set max warns for users in this guild", Permission.KICK_MEMBERS, "Admin", arrayOf("maxwarnings","maximumwarns"))
 
     commands.add(lvl)
     commands.add(help)
@@ -170,5 +189,8 @@ fun registerCommands() {
     commands.add(setmessage)
     commands.add(setlink)
     commands.add(setdebug)
+    commands.add(suggest)
+    commands.add(suggestion)
+    commands.add(maxwarns)
 
 }

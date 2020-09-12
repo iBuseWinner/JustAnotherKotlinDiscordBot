@@ -11,15 +11,16 @@ class SuggestionsOMG : ListenerAdapter() {
         if(event.user?.isBot!!) return
 
         event.retrieveMessage().queue {
-            if(it.author.isBot) {
-                if(it.author.id == jda?.selfUser?.id) {
-                    
-                }
+            val channel = event.channel.idLong
+            val suggestChannel = getSuggestChannel(event.guild.idLong)
+            if(channel == suggestChannel) {
+                //ToDo
             }
         }
-
-        val channel = event.channel
-        val suggestChannel = getSuggestChannel(event.guild.idLong)
     }
+    //TODO
+//    fun calcChance(approve: Long, minus: Long, disapprove: Long) {
+//
+//    }
 
 }

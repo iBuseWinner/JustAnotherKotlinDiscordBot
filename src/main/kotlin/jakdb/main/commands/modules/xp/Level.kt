@@ -53,7 +53,7 @@ class Level(command: String, rank: Int, test: Boolean,
             lang?.let { getMessage(it, "XP", "levelother", replace) }?.build()?.let { channel.sendMessage(it).queue() }
         } catch (e: IllegalArgumentException) {
             try {
-                val tar = getUser(msg.mentionedUsers[0].idLong)
+                val tar = getUser(args.toLong())
 
                 val xp = tar?.globalXP
                 val level = tar?.globalLVL
