@@ -3,9 +3,7 @@ package jakdb
 import jakdb.data.mysql.createTables
 import jakdb.data.mysql.setup
 import jakdb.main.commands.ICommand
-import jakdb.main.commands.modules.admin.Maxwarns
-import jakdb.main.commands.modules.admin.Say
-import jakdb.main.commands.modules.admin.Suggest
+import jakdb.main.commands.modules.admin.*
 import jakdb.main.commands.modules.economy.Balance
 import jakdb.main.commands.modules.economy.Casino
 import jakdb.main.commands.modules.economy.DailyReward
@@ -38,7 +36,7 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 const val debug = true
-const val version = "0.3.1 ALPHA"
+const val version = "0.0.3.4 ALPHA"
 val authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
@@ -51,9 +49,6 @@ const val symbolGold = "<:gold:747104154043809922>"
 var commandsUsed = 0L
 var totalXPgain = 0L
 
-//const val symbolApproved = "<a:approved:748855884096208936>"
-//const val symbolMinus = "<a:minus:748856252435791872>"
-//const val symbolDisapproved = "<a:disapproved:748855883009884292>"
 const val symbolApproved = 748855884096208936
 const val symbolMinus = 748856252435791872
 const val symbolDisapproved = 748855883009884292
@@ -170,7 +165,16 @@ fun registerCommands() {
             1, "Send suggestion in this guild", Permission.UNKNOWN, "Utils", arrayOf("sendsuggest", "wantsuggest"))
 
     val maxwarns = Maxwarns("maxwarns", 0, true, "${defPrefix}maxwarns [amount]",
-            0, "Get or set max warns for users in this guild", Permission.KICK_MEMBERS, "Admin", arrayOf("maxwarnings","maximumwarns"))
+            0, "Get or set max warns for users in this guild", Permission.ADMINISTRATOR, "Admin", arrayOf("maxwarnings","maximumwarns"))
+
+    val greeting = Greeting("greeting", 0, true, "${defPrefix}greeting <join/quit> [message] **or** ${defPrefix}greeting channel <join/quit> **or** ${defPrefix}greeting disable <join/quit>",
+            2, "Set or disable greeting join/quit message for users", Permission.MESSAGE_MANAGE, "Admin", arrayOf("hello","bye","hibye"))
+
+    val setpunish = Setpunish("setpunish", 0, true, "${defPrefix}setpunish <amount> <ban/mute/kick> <count> <timeunit (sec,min,day,week,mo,year)> **or** ${defPrefix}setpunish <amount> no",
+            2, "Set or disable punish for warns amount", Permission.ADMINISTRATOR, "Admin", arrayOf("addpunish","removepunish","delpunish"))
+
+    val getpunishs = Getpunishs("getpunishes", 0, true, "${defPrefix}getpunishs",
+            0, "Get punishes", Permission.UNKNOWN, "Admin", arrayOf("allpunishes","punishes","puns"))
 
     commands.add(lvl)
     commands.add(help)
@@ -192,5 +196,8 @@ fun registerCommands() {
     commands.add(suggest)
     commands.add(suggestion)
     commands.add(maxwarns)
+    commands.add(greeting)
+    commands.add(setpunish)
+    commands.add(getpunishs)
 
 }

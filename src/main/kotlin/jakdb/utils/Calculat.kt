@@ -38,7 +38,7 @@ fun getAllWarnsAndRemoveOld(guild: Long, count: Int) {
         punishs[str.split(":")[0].toInt()] = str.split(":")[1]
     }
 
-    punishs.remove(count)
+    punishs[count] = "no"
 
     var sql = ""
     val new: MutableList<String> = warns.toMutableList()
