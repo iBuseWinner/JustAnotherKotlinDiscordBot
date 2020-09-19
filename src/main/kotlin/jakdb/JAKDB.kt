@@ -36,7 +36,7 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 const val debug = true
-const val version = "0.0.3.4 ALPHA"
+const val version = "0.0.5.4 ALPHA"
 val authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
@@ -176,6 +176,9 @@ fun registerCommands() {
     val getpunishs = Getpunishs("getpunishes", 0, true, "${defPrefix}getpunishs",
             0, "Get punishes", Permission.UNKNOWN, "Admin", arrayOf("allpunishes","punishes","puns"))
 
+    val logchannel = Logchannel("logchannel", 0, true, "${defPrefix}logchannel [disable]",
+            0, "Enable or disable logging any admin commands, editing messages and etc", Permission.VIEW_AUDIT_LOGS, "Admin", arrayOf("enablelog","logging","disablelog","togglelog"))
+
     commands.add(lvl)
     commands.add(help)
     commands.add(aboutbot)
@@ -199,5 +202,6 @@ fun registerCommands() {
     commands.add(greeting)
     commands.add(setpunish)
     commands.add(getpunishs)
+    commands.add(logchannel)
 
 }
