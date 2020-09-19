@@ -76,8 +76,8 @@ class JAKDBEventer : ListenerAdapter() {
                 val map: HashMap<String, String> = HashMap()
 
                 map["<level.last>"] = "${currLevel-1}"
-                map["<level.current>"] = "$currLevel"
-                map["<level.next>"] = "${currLevel+1}"
+                map["<level.current>"] = "${currLevel+1}"
+                map["<level.next>"] = "${currLevel+2}"
 
                 val reward: Long = 1*(currLevel*mult)
                 map["<level.reward>"] = "$reward"
