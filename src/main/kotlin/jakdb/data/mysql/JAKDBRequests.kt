@@ -58,6 +58,15 @@ fun createTables() {
             "`warnsPunish` TEXT(200) NULL DEFAULT '0:no'," +
             "`logChannel` BIGINT NULL DEFAULT '0'" +
             ") COLLATE='utf8mb4_unicode_ci';"
+    val quotes = "CREATE TABLE IF NOT EXISTS `jadb_quotes` (" +
+            "`uuid` VARCHAR(50) NULL DEFAULT UUID()," +
+            "`authorId` BIGINT NULL DEFAULT NULL," +
+            "`name` VARCHAR(50) NULL DEFAULT NULL," +
+            "`guildId` BIGINT NULL DEFAULT NULL," +
+            "`quote` TEXT(200) NULL DEFAULT NULL" +
+            ") COLLATE='utf8mb4_unicode_ci';"
+
+
     debug("MySQL - start creating `jadb_users`")
     sendExecute(users)
     debug("MySQL - start creating `jadb_guilds`")
@@ -68,6 +77,8 @@ fun createTables() {
     sendExecute(userSettings)
     debug("MySQL - start creating `jadb_guild_set`")
     sendExecute(guildSettings)
+    debug("MySQL - start creating `jadb_quotes`")
+    sendExecute(quotes)
 }
 
 @Synchronized
@@ -546,4 +557,72 @@ fun setLogChannel(id: Long, channel: Long) {
 fun setWarnsPunish(id: Long, str: String) {
     val set = "UPDATE `jadb_guild_set` SET `warnsPunish`='$str' WHERE `discordId`=$id;"
     sendExecute(set)
+}
+
+@Synchronized
+fun addNewQuote(author: Long, guild: Long, name: String, quote: String) {
+    val add = "INSERT INTO `jadb_quotes` (`authorId`,`name`,`guildId`,`quote`) VALUES ('$author','$name','$guild','$quote');"
+    sendExecute(add)
+}
+
+@Synchronized
+fun removeQuoteByName(guild: Long, name: String) {
+    val remove = "DELETE FROM `jadb_quotes` WHERE `guildId`='$guild' AND `name`='$name';"
+    sendExecute(remove)
+}
+
+@Synchronized
+fun editQuoteByName(guild: Long, name: String, quote: String) {
+    val update = "UPDATE `jadb_quotes` SET `quote`='$quote' WHERE `guildId`='$guild' AND `name`='$name';"
+    sendExecute(update)
+}
+
+@Synchronized
+fun getAllQuotesInGuild(guild: Long): ArrayList<String> {
+    val get = "SELECT * FROM `jadb_quotes` WHERE `guildId`='$guild';"
+    val res: ResultSet? = sendQuery(get)
+    if(res != null) {
+        if(res.next()) {
+            val name = res.getString("name")
+            val uuid = res.getString("uuid")
+            val author = res.getLong("authorId")
+
+            val quotes = ArrayList<String>()
+            quotes.add("$uuid:$name:$author")
+
+            res.close()
+            return quotes
+        }
+    }
+    return arrayListOf()
+}
+
+@Synchronized
+fun getQuoteByName(guild: Long, name: String): String {
+    val get = "SELECT `quote` FROM `jadb_quotes` WHERE `guildId`='$guild' AND `name`='$name';"
+    val res: ResultSet? = sendQuery(get)
+    if(res != null) {
+        if(res.next()) {
+            val quote = res.getString("quote")
+            res.close()
+            return quote
+        }
+    }
+    return "Quote not found"
+}
+
+@Synchronized
+fun isQuoteExistsByName(guild: Long, name: String): Boolean {
+    val ise = "SELECT COUNT(`quote`) FROM `jadb_quotes` WHERE `guildId`='$guild' AND `name`='$name';"
+    val res: ResultSet? = sendQuery(ise)
+    if (res != null) {
+        if(res.next()) {
+            val count = res.getInt("COUNT(`quote`)")
+            if(count == 1) {
+                res.close()
+                return true
+            }
+        }
+    }
+    return false
 }

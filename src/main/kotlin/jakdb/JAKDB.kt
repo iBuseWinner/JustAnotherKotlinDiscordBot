@@ -18,11 +18,11 @@ import jakdb.main.commands.modules.help.Modules
 import jakdb.main.commands.modules.secret.AboutBot
 import jakdb.main.commands.modules.secret.End
 import jakdb.main.commands.modules.secret.Send
-import jakdb.main.commands.modules.utils.ProfileDebug
-import jakdb.main.commands.modules.utils.Suggestion
+import jakdb.main.commands.modules.utils.*
 import jakdb.main.commands.modules.xp.Level
 import jakdb.main.events.GuildsGreeter
 import jakdb.main.events.JAKDBEventer
+import jakdb.main.events.QuoteEventer
 import jakdb.main.events.SuggestionsOMG
 import jakdb.utils.*
 import net.dv8tion.jda.api.JDA
@@ -36,7 +36,7 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 const val debug = true
-const val version = "0.0.5.4 ALPHA"
+const val version = "0.0.6.8 ALPHA"
 val authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
@@ -82,6 +82,7 @@ fun main(args: Array<String>) {
                         .addEventListeners(JAKDBEventer())
                         .addEventListeners(SuggestionsOMG())
                         .addEventListeners(GuildsGreeter())
+                        .addEventListeners(QuoteEventer())
                         .disableCache(CacheFlag.ACTIVITY)
                         .setActivity(Activity.listening("users"))
                         .build()
@@ -179,6 +180,15 @@ fun registerCommands() {
     val logchannel = Logchannel("logchannel", 0, true, "${defPrefix}logchannel [disable]",
             0, "Enable or disable logging any admin commands, editing messages and etc", Permission.VIEW_AUDIT_LOGS, "Admin", arrayOf("enablelog","logging","disablelog","togglelog"))
 
+    val createquote = Createquote("createquote", 0, true, "${defPrefix}createquote <name> <quote (support JSON)>",
+            2, "Create quote for this guild", Permission.MESSAGE_MANAGE, "Utils", arrayOf("addquote","quote","+quote"))
+
+    val editquote = Editquote("editquote", 0, true, "${defPrefix}editquote <name> <quote (support JSON)>",
+            2, "Edit quote for this guild", Permission.MESSAGE_MANAGE, "Utils", arrayOf("equote"))
+
+    val removequote = Removequote("removequote", 0, true, "${defPrefix}removequote <name>",
+            2, "Remove quote for this guild", Permission.MESSAGE_MANAGE, "Utils", arrayOf("deletequote","delquote","-quote"))
+
     commands.add(lvl)
     commands.add(help)
     commands.add(aboutbot)
@@ -203,5 +213,8 @@ fun registerCommands() {
     commands.add(setpunish)
     commands.add(getpunishs)
     commands.add(logchannel)
+    commands.add(createquote)
+    commands.add(editquote)
+    commands.add(removequote)
 
 }
