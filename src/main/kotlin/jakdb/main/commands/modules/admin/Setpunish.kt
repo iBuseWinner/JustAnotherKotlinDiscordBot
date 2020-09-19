@@ -27,10 +27,14 @@ class Setpunish(command: String, rank: Int, test: Boolean,
             amount = argss[0].toInt()
         } catch (e: NumberFormatException) {
             channel.sendMessage(getGlobalMessage("number", replace).build()).queue()
+            return
         }
 
         if(argss[1] == "no" || argss[1] == "off" || argss[1] == "disable") {
             getAllWarnsAndRemoveOld(guild!!, amount)
+            replace["<punish.amount>"] = "$amount"
+            channel.sendMessage(getMessage(lang!!, "Admin", "removepunish", replace).build()).queue()
+            return
         } else {
             var mult: Long = 1
 
@@ -56,6 +60,7 @@ class Setpunish(command: String, rank: Int, test: Boolean,
                 value = argss[2].toLong()
             } catch (e: NumberFormatException) {
                 channel.sendMessage(getGlobalMessage("number", replace).build()).queue()
+                return
             }
 
             val calc = value * mult
@@ -63,21 +68,24 @@ class Setpunish(command: String, rank: Int, test: Boolean,
             if (calc > 29030400) {
                 replace["<number>"] = "$calc"
                 channel.sendMessage(getGlobalMessage("tooBig", replace).build()).queue()
+                return
             } else {
                 if (amount <= 0) {
                     replace["<number>"] = "$amount"
                     channel.sendMessage(getGlobalMessage("tooBig", replace).build()).queue()
+                    return
                 } else {
                     var type = "no"
                     if (argss[1] == "ban") {
                         type = "ban>$calc"
-                    } else if (argss[2] == "mute") {
+                    } else if (argss[1] == "mute") {
                         type = "mute>$calc"
-                    } else if (argss[3] == "kick") {
+                    } else if (argss[1] == "kick") {
                         type = "kick>$calc"
                     } else {
                         if (getUsDebug(user.idLong)) {
                             channel.sendMessage(getDebugMessage("wrongargs", replace).build()).queue()
+                            return
                         }
                     }
 

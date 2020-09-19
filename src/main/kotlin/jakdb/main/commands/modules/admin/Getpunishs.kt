@@ -25,7 +25,7 @@ class Getpunishs(command: String, rank: Int, test: Boolean,
         var answer = ""
         for(w in warns) {
             val split = w.split(":")
-            answer = "**${split[0]}**: _${split[1]}_\n"
+            answer += "**${split[0]}**: _${split[1]}_\n"
         }
 
         replace["<punish.list>"] = answer
