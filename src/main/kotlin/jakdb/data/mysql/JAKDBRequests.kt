@@ -694,3 +694,23 @@ fun removeWarnForUser(guild: Long, user: Long) {
     val remove = "UPDATE `jadb_us_g$guild` SET `warns`=`warns`-1 WHERE `discordId`=$user;"
     sendExecute(remove)
 }
+
+@Synchronized
+fun setWarnReasonsForUser(guild: Long, user: Long, reasons: String) {
+    val set = "UPDATE `jadb_us_g$guild` SET `warnsReasons`='$reasons' WHERE `discordId`=$user;"
+    sendExecute(set)
+}
+
+@Synchronized
+fun getWarnReasonsForUser(guild: Long, user: Long): String {
+    val get = "SELECT `warnsReasons` FROM `jadb_us_g$guild` WHERE `discordId`=$user;"
+    val res: ResultSet? = sendQuery(get)
+    if(res != null) {
+        if(res.next()) {
+            val reasons = res.getString("warnsReasons")
+            res.close()
+            return reasons
+        }
+    }
+    return "{\"no reasons\"}"
+}
