@@ -17,7 +17,23 @@ class QuoteEventer : ListenerAdapter() {
         val guild = event.guild.idLong
 
         if(isQuoteExistsByName(guild, name)) {
-            val quote = getQuoteByName(guild, name)
+            val user = event.author
+            val juser = getUser(user.idLong)
+            val replace = HashMap<String, String>()
+
+            replace["<target.mention>"] = user.asMention
+            replace["<target.tag>"] = user.asTag
+            replace["<target.avatarUrl>"] = "${user.avatarUrl}"
+            if(juser != null) {
+                replace["<target.jakdb.uuid>"] = juser.uuid.toString()
+                replace["<target.jakdb.rank>"] = "${juser.rank}"
+                replace["<target.jakdb.global.level>"] = "${juser.globalLVL}"
+                replace["<target.jakdb.global.xp>"] = "${juser.globalXP}"
+                replace["<target.jakdb.regtime>"] = "${juser.regTime}"
+            }
+            
+            var quote = getQuoteByName(guild, name)
+            replace.forEach { quote = quote.replace(it.key, it.value) }
             event.channel.sendMessage(fromJSONToEmbeddedMessage(quote).build()).queue()
         }
     }

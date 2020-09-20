@@ -36,7 +36,7 @@ import org.json.simple.parser.JSONParser
 import java.io.FileReader
 
 const val debug = true
-const val version = "0.0.6.8 ALPHA"
+const val version = "0.0.6.10 ALPHA"
 val authors = arrayOf("BuseSo#6824")
 var jda: JDA? = null
 var settings: JSONObject? = null
@@ -189,6 +189,12 @@ fun registerCommands() {
     val removequote = Removequote("removequote", 0, true, "${defPrefix}removequote <name>",
             2, "Remove quote for this guild", Permission.MESSAGE_MANAGE, "Utils", arrayOf("deletequote","delquote","-quote"))
 
+    val prefix = Prefix("prefix", 0, true, "${defPrefix}prefix [prefix]",
+            0, "Get or set prefix for commands in this guild", Permission.ADMINISTRATOR, "Admin", arrayOf("setprefix","getprefix","guildprefix"))
+
+    val muterole = Muterole("muterole", 0, true, "${defPrefix}muterole [role id]",
+            0, "Get or set mute role id in this guild", Permission.ADMINISTRATOR, "Admin", arrayOf("setmuterole","changemuterole","getmuterole","setmr","getmr"))
+
     commands.add(lvl)
     commands.add(help)
     commands.add(aboutbot)
@@ -216,5 +222,7 @@ fun registerCommands() {
     commands.add(createquote)
     commands.add(editquote)
     commands.add(removequote)
+    commands.add(prefix)
+    commands.add(muterole)
 
 }
