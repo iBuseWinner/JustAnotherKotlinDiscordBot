@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.entities.ChannelType
+import java.awt.Color
 
 class JAKDBEventer : ListenerAdapter() {
     override fun onMessageReceived(e: MessageReceivedEvent) {
@@ -35,6 +36,16 @@ class JAKDBEventer : ListenerAdapter() {
         }
 
         onMsgForCommand(e)
+
+        if(getMuteRoleId(e.guild.idLong) == 0L) {
+            val perms = ArrayList<Permission>()
+            perms.add(Permission.MESSAGE_HISTORY)
+            perms.add(Permission.MESSAGE_READ)
+            e.guild.createRole().setName("muted user").setMentionable(false).setColor(Color.DARK_GRAY).setPermissions(perms).queue {
+                val id = it.idLong
+                setMuteRoleId(e.guild.idLong, id)
+            }
+        }
     }
 
     private fun onMsgForLevel(e: MessageReceivedEvent) {
@@ -96,7 +107,7 @@ class JAKDBEventer : ListenerAdapter() {
 
     private fun onMsgForCommand(e: MessageReceivedEvent) {
         var msg = e.message.contentRaw
-        if(msg.startsWith(defPrefix)) {
+        if(msg.startsWith(defPrefix) || msg.startsWith(getCmdPrefix(e.guild.idLong))) {
             msg = msg.substring(1)
 
             if (e.channelType == ChannelType.TEXT) {

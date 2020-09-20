@@ -31,7 +31,7 @@ class QuoteEventer : ListenerAdapter() {
                 replace["<target.jakdb.global.xp>"] = "${juser.globalXP}"
                 replace["<target.jakdb.regtime>"] = "${juser.regTime}"
             }
-            
+
             var quote = getQuoteByName(guild, name)
             replace.forEach { quote = quote.replace(it.key, it.value) }
             event.channel.sendMessage(fromJSONToEmbeddedMessage(quote).build()).queue()
