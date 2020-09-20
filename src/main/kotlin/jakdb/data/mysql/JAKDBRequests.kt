@@ -56,7 +56,9 @@ fun createTables() {
             "`suggestChannel` BIGINT NULL DEFAULT '0'," +
             "`maxWarns` INT NULL DEFAULT '10'," +
             "`warnsPunish` TEXT(200) NULL DEFAULT '0:no'," +
-            "`logChannel` BIGINT NULL DEFAULT '0'" +
+            "`logChannel` BIGINT NULL DEFAULT '0'," +
+            "`cmdPrefix` VARCHAR(50) NULL DEFAULT '!'," +
+            "`muteRoleId` BIGINT NULL DEFAULT '0'" +
             ") COLLATE='utf8mb4_unicode_ci';"
     val quotes = "CREATE TABLE IF NOT EXISTS `jadb_quotes` (" +
             "`uuid` VARCHAR(50) NULL DEFAULT UUID()," +
@@ -512,6 +514,46 @@ fun getLogChannel(id: Long): Long {
 }
 
 @Synchronized
+fun getCmdPrefix(id: Long): String {
+    val get = "SELECT `cmdPrefix` FROM `jadb_guild_set` WHERE `discordId`=$id;"
+    val res: ResultSet? = sendQuery(get)
+    if(res != null) {
+        if(res.next()) {
+            val prefix = res.getString("cmdPrefix")
+            res.close()
+            return prefix
+        }
+    }
+    return "!"
+}
+
+@Synchronized
+fun getMuteRoleId(id: Long): Long {
+    val get = "SELECT `muteRoleId` FROM `jadb_guild_set` WHERE `discordId`=$id;"
+    val res: ResultSet? = sendQuery(get)
+    if(res != null) {
+        if(res.next()) {
+            val role = res.getLong("muteRoleId")
+            res.close()
+            return role
+        }
+    }
+    return 0
+}
+
+@Synchronized
+fun setCmdPrefix(id: Long, prefix: String) {
+    val set = "UPDATE `jadb_guild_set` SET `cmdPrefix`='$prefix' WHERE `discordId`=$id;"
+    sendExecute(set)
+}
+
+@Synchronized
+fun setMuteRoleId(id: Long, role: Long) {
+    val set = "UPDATE `jadb_guild_set` SET `muteRoleId`=$role WHERE `discordId`=$id;"
+    sendExecute(set)
+}
+
+@Synchronized
 fun setHelloChannel(id: Long, channel: Long) {
     val set = "UPDATE `jadb_guild_set` SET `helloChannel`=$channel WHERE `discordId`=$id;"
     sendExecute(set)
@@ -625,4 +667,30 @@ fun isQuoteExistsByName(guild: Long, name: String): Boolean {
         }
     }
     return false
+}
+
+@Synchronized
+fun getWarnsForUser(guild: Long, user: Long): Int {
+    val get = "SELECT `warns` FROM `jadb_us_g$guild` WHERE `discordId`=$user;"
+    val res: ResultSet? = sendQuery(get)
+    if(res != null) {
+        if(res.next()) {
+            val warns = res.getInt("warns")
+            res.close()
+            return warns
+        }
+    }
+    return 0
+}
+
+@Synchronized
+fun addWarnForUser(guild: Long, user: Long) {
+    val add = "UPDATE `jadb_us_g$guild` SET `warns`=`warns`+1 WHERE `discordId`=$user;"
+    sendExecute(add)
+}
+
+@Synchronized
+fun removeWarnForUser(guild: Long, user: Long) {
+    val remove = "UPDATE `jadb_us_g$guild` SET `warns`=`warns`-1 WHERE `discordId`=$user;"
+    sendExecute(remove)
 }
