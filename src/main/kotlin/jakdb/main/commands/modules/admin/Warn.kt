@@ -29,15 +29,16 @@ class Warn(command: String, rank: Int, test: Boolean,
 
         val mention = msg.mentionedMembers[0]
         val target = mention.idLong
+        replace["<target.mention>"] = mention.asMention
 
         if(amount >= getWarnsForUser(guild, target)) {
             if(mention.hasPermission(Permission.ADMINISTRATOR) || mention.hasPermission(Permission.MANAGE_SERVER)
                     || mention.hasPermission(Permission.KICK_MEMBERS) || mention.hasPermission(Permission.BAN_MEMBERS)) {
-                replace["<target.mention>"] = mention.asMention
                 channel.sendMessage(getMessage(lang!!, "Admin", "cantpunish", replace).build()).queue()
             } else {
                 replace["<warns.user.count>"] = "${getWarnsForUser(guild, target)}"
                 replace["<warns.user.reason>"] = reason
+                replace["<warns.moder>"] = user.asMention
                 addWarnForUser(guild, target)
                 getAllUserWarnsAndAddNew(guild, target, reason)
 

@@ -195,6 +195,12 @@ fun registerCommands() {
     val muterole = Muterole("muterole", 0, true, "${defPrefix}muterole [role id]",
             0, "Get or set mute role id in this guild", Permission.ADMINISTRATOR, "Admin", arrayOf("setmuterole","changemuterole","getmuterole","setmr","getmr"))
 
+    val kick = Kick("kick", 0, true, "${defPrefix}kick <user/id> <reason>",
+            2, "Kick user from guild", Permission.KICK_MEMBERS, "Admin", arrayOf("kickuser"))
+
+    val warn = Warn("warn", 0, true, "${defPrefix}warn <user/id> <reason>",
+            2, "Warn user", Permission.KICK_MEMBERS, "Admin", arrayOf(""))
+
     commands.add(lvl)
     commands.add(help)
     commands.add(aboutbot)
@@ -224,5 +230,7 @@ fun registerCommands() {
     commands.add(removequote)
     commands.add(prefix)
     commands.add(muterole)
+    commands.add(kick)
+    commands.add(warn)
 
 }
